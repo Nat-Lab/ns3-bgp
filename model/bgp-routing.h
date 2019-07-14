@@ -42,8 +42,9 @@ public:
     void SetIpv4 (Ptr<Ipv4> ipv4);
     void SetRib(const libbgp::BgpRib *rib);
 
-private:
     Ptr<NetDevice> GetDeviceByNexthop(const Ipv4Address &nexthop) const;
+
+private:
     const libbgp::BgpRib *_rib;
     Ptr<Ipv4> _ipv4;
 };
