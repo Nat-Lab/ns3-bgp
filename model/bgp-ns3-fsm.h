@@ -11,6 +11,7 @@
 #ifndef BGP_NS3_FSM_H
 #define BGP_NS3_FSM_H
 #include <libbgp/bgp-fsm.h>
+#include "bgp-log.h"
 #include "ns3/simple-ref-count.h"
 
 namespace ns3 {
@@ -23,7 +24,9 @@ namespace ns3 {
  */
 class BgpNs3Fsm : public libbgp::BgpFsm, public SimpleRefCount<BgpNs3Fsm> {
 public:
-    BgpNs3Fsm (libbgp::BgpConfig config);
+    BgpNs3Fsm (libbgp::BgpConfig config, Ptr<BgpLog> logger);
+private:
+    Ptr<BgpLog> _logger;
 };
 
 }
