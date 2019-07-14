@@ -11,6 +11,8 @@
 #include <arpa/inet.h>
 #include "bgp-routing.h"
 #include "ns3/log.h"
+#include "ns3/node.h"
+#include "ns3/simulator.h"
 
 namespace ns3 {
 
@@ -131,7 +133,9 @@ Ptr<NetDevice> BgpRouting::GetDeviceByNexthop(const Ipv4Address &nexthop) const 
             Ipv4InterfaceAddress addr = _ipv4->GetAddress(iface_id, addr_id);
             Ipv4Mask mask = addr.GetMask();
             if (addr.GetLocal().CombineMask(mask) == nexthop.CombineMask(mask)) {
-                return _ipv4->GetNetDevice(iface_id);
+                if (_ipv4->IsForwarding(iface_id) && _ipv4->IsUp(iface_id)) {
+                    return _ipv4->GetNetDevice(iface_id);
+                } else NS_LOG_INFO("interface " << iface_id << " has matching address but not up or not in forwarding mode.");
             }           
         }
     }
