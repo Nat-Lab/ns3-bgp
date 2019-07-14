@@ -39,19 +39,13 @@ public:
 
     void AddRoute(libbgp::Route route, uint32_t nexthop);
     void AddRoute(uint32_t prefix, uint8_t mask, uint32_t nexthop);
-    void AddRoute(Ipv4Address prefix, Ipv4Mask mask, Ipv4Address nexthop);
+    void AddRoute(const Ipv4Address &prefix, const Ipv4Mask &mask, const Ipv4Address &nexthop);
 
-    void SetAsn(uint32_t asn);
-    void SetRouterId(uint32_t router_id);
-    void SetRouterid(Ipv4Address router_id);
     void SetLibbgpLogLevel(libbgp::LogLevel log_level);
     
 private:
-    uint32_t _asn;
-
     BgpLog _logger;
     BgpRouting _routing;
-    Ipv4Address _router_id;
 
     std::vector<Ptr<BgpNs3Fsm>> _fsms;
     std::vector<Peer> _peers;
