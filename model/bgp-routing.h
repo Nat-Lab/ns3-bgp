@@ -37,14 +37,9 @@ public:
   	void NotifyInterfaceDown (uint32_t interface);
   	void NotifyAddAddress (uint32_t interface, Ipv4InterfaceAddress address);
   	void NotifyRemoveAddress (uint32_t interface, Ipv4InterfaceAddress address);
-  	void SetIpv4 (Ptr<Ipv4> ipv4);
   	void PrintRoutingTable (Ptr<OutputStreamWrapper> stream, Time::Unit unit = Time::S) const;
 
-	void AddNetworkRouteTo (Ipv4Address network, Ipv4Mask networkPrefix, Ipv4Address nextHop, uint32_t interface);
-    void AddNetworkRouteTo (Ipv4Address network, Ipv4Mask networkPrefix, uint32_t interface);
-	void RemoveNetworkRouteTo (Ipv4Address network, Ipv4Mask networkPrefix, Ipv4Address nextHop, uint32_t interface);
-	void RemoveNetworkRouteTo (Ipv4Address network, Ipv4Mask networkPrefix, uint32_t interface);
-
+    void SetIpv4 (Ptr<Ipv4> ipv4);
     void SetRib(const libbgp::BgpRib *rib);
 
 private:
