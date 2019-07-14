@@ -48,7 +48,97 @@ Bgp::Bgp() : _logger("(init)"), _rib(&_logger) {
     _old_protocol = nullptr;
 }
 
+void Bgp::StartApplication(void) {
+    if (_running) {
+        NS_LOG_WARN("BGP application already started.");
+        return;
+    }
 
+    NS_LOG_LOGIC("creating configuration template...");
+    _template.clock = &_clock;
+    _template.forced_default_nexthop = false;
+    _template.hold_timer = (uint16_t) _hold_timer.GetSeconds();
+    _template.no_collision_detection = false;
+    _template.no_nexthop_check = false;
+    _template.rev_bus = &_bus;
+    _template.rib = &_rib;
+    _template.router_id = htonl(_bgp_id.Get());
+    _template.use_4b_asn = true;
+
+    Ptr<Ipv4> ipv4 = GetNode()->GetObject<Ipv4>();
+    _old_protocol = ipv4->GetRoutingProtocol();
+
+    NS_LOG_LOGIC("installing BgpRouting...");
+
+    Ptr<Ipv4ListRouting> list_routing = CreateObject<Ipv4ListRouting>();
+    list_routing->AddRoutingProtocol(_old_protocol, 10);
+    list_routing->AddRoutingProtocol(_routing, 5);
+    ipv4->SetRoutingProtocol(list_routing);
+
+    NS_LOG_LOGIC("starting listening socket...");
+
+    _listen_socket = Socket::CreateSocket(GetNode(), TcpSocketFactory::GetTypeId());
+    
+    if (_listen_socket->Bind(InetSocketAddress(Ipv4Address::GetAny(), 179)) == -1) {
+        NS_FATAL_ERROR("failed to bind socket.");
+    }
+
+    if (_listen_socket->Listen() == -1) {
+        NS_FATAL_ERROR("failed to listen socket");
+    }
+
+    _listen_socket->SetAcceptCallback(
+        MakeCallback(&Bgp::HandleRequest, this),
+        MakeCallback(&Bgp::HandleAccept, this)
+    );
+    
+    NS_LOG_LOGIC("sending OPEN message to peers...");
+
+    for (const Peer &peer : _peers) {
+        if (peer.passive) {
+            NS_LOG_LOGIC("skipping passive peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
+            continue;
+        }
+
+        ConnectPeer(peer);        
+    }
+
+    NS_LOG_LOGIC("init complete.");
+    _running = true;
+
+    // TODO scheduler ticker
+}
+
+bool Bgp::ConnectPeer(const Peer &peer) {
+    NS_LOG_LOGIC("obtaning local address information for peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
+
+    Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer.peer_address);
+
+    if (local_address == nullptr) {
+        NS_LOG_WARN("peer AS" << peer.peer_asn << " (" << peer.peer_address << ") unreachable on any device, skipping.");
+        return false;
+    }
+
+    // TODO create socket
+    // TODO check/set peer metadata (fsm, socket, etc)
+    // TODO connect retry
+
+    NS_LOG_LOGIC("buliding FSM for peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
+
+    char peer_name[128];
+    snprintf(peer_name, 128, "AS%d", peer.peer_asn);
+    libbgp::BgpConfig peer_config(_template);
+    Ptr<BgpLog> peer_logger = Create<BgpLog>(peer_name);
+    peer_config.asn = peer.local_asn;
+    peer_config.in_filters = peer.ingress_rules;
+    peer_config.out_filters = peer.egress_rules;
+    peer_config.log_handler = PeekPointer(peer_logger);
+    peer_config.nexthop = htonl(local_address->GetLocal().Get());
+    peer_config.out_handler = NULL; // TODO
+    peer_config.peer_asn = peer.peer_asn;
+    peer_config.peering_lan_length = local_address->GetMask().GetPrefixLength();
+    peer_config.peering_lan_prefix = htonl(local_address->GetLocal().CombineMask(local_address->GetMask()).Get());
+}
 
 void Bgp::AddPeer(const Peer &peer) {
     _peers.push_back(peer);

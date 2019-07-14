@@ -25,7 +25,10 @@ public:
 
 private:
     friend Bgp;
-    uint32_t device_id;
+
+    uint32_t _device_id;
+    Ptr<BgpNs3Fsm> _fsm;
+    Ptr<Socket> _socket;
 };
 
 class Bgp : public Application {
@@ -45,11 +48,14 @@ public:
     void SetLibbgpLogLevel(libbgp::LogLevel log_level);
     void SetBgpId(Ipv4Address bgp_id);
     void SetHoldTimer(Time hold_timer);
+    
+private:
+    void Tick();
+    bool ConnectPeer(const Peer &peer);
 
     void HandleAccept(Ptr<Socket> socket, const Address &src);
     bool HandleRequest(Ptr<Socket> socket, const Address &src);
-    
-private:
+
     Time _hold_timer;
 
     BgpLog _logger;
