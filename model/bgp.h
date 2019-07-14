@@ -2,7 +2,7 @@
 #define BGP_H
 
 #include <vector>
-#include <libbgp/bgp-fsm.h>
+#include "bgp-ns3-fsm.h"
 #include "bgp-log.h"
 #include "bgp-routing.h"
 #include "ns3/application.h"
@@ -47,7 +47,7 @@ private:
     BgpRouting _routing;
     Ipv4Address _router_id;
 
-    std::vector<Ptr<libbgp::BgpFsm>> _fsms;
+    std::vector<Ptr<BgpNs3Fsm>> _fsms;
     std::vector<Peer> _peers;
 
     libbgp::BgpConfig _template;
