@@ -43,6 +43,7 @@ public:
     void SetRib(const libbgp::BgpRib *rib);
 
     Ptr<NetDevice> GetDeviceByNexthop(const Ipv4Address &nexthop) const;
+    Ptr<Ipv4InterfaceAddress> GetAddressByNexthop(const Ipv4Address &nexthop) const;
 
 private:
     const libbgp::BgpRib *_rib;
