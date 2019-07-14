@@ -1,7 +1,9 @@
 #include <arpa/inet.h>
 #include "bgp.h"
 #include "ns3/log.h"
-#include "ns3/uinteger.h"
+#include "ns3/enum.h"
+#include "ns3/ipv4-list-routing.h"
+#include "ns3/tcp-socket-factory.h"
 
 namespace ns3 {
 
@@ -12,7 +14,24 @@ TypeId Bgp::GetTypeId (void) {
     static TypeId tid = TypeId("ns3::Bgp")
         .SetParent<Application>()
         .SetGroupName("Internet")
-        .AddConstructor<Bgp>();
+        .AddConstructor<Bgp>()
+        .AddAttribute("libbgp Log Level", "Log level for libbgp to use",
+            EnumValue(libbgp::INFO),
+            MakeEnumAccessor(&Bgp::_log_level),
+            MakeEnumChecker(
+                libbgp::FATAL, "Fatal",
+                libbgp::ERROR, "Error",
+                libbgp::WARN, "Warning",
+                libbgp::INFO, "Info",
+                libbgp::DEBUG, "Debug"))
+        .AddAttribute("Router ID", "Local BGP ID",
+            Ipv4AddressValue(),
+            MakeIpv4AddressAccessor(&Bgp::_bgp_id),
+            MakeIpv4AddressChecker())
+        .AddAttribute("Hold Timer", "Hold Timer",
+            TimeValue(Seconds(120)),
+            MakeTimeAccessor(&Bgp::_hold_timer),
+            MakeTimeChecker(Seconds(3), Seconds(UINT16_MAX)));
 
     return tid;
 }
@@ -21,8 +40,15 @@ Bgp::Bgp() : _logger("(init)"), _rib(&_logger) {
     _log_level = libbgp::INFO;
 
     _logger.setLogLevel(_log_level);
-    _routing.SetRib(&_rib);
+    _routing = CreateObject<BgpRouting>();
+    _routing->SetRib(&_rib);
+
+    _running = false;
+    _listen_socket = nullptr;
+    _old_protocol = nullptr;
 }
+
+
 
 void Bgp::AddPeer(const Peer &peer) {
     _peers.push_back(peer);

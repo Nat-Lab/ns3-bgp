@@ -3,10 +3,12 @@
 
 #include <vector>
 #include "bgp-ns3-fsm.h"
+#include "bgp-ns3-clock.h"
 #include "bgp-log.h"
 #include "bgp-routing.h"
 #include "ns3/application.h"
 #include "ns3/ipv4-address.h"
+#include "ns3/socket.h"
 
 namespace ns3 {
 
@@ -16,7 +18,6 @@ class Peer {
 public:
     uint32_t local_asn;
     uint32_t peer_asn;
-    Ipv4Address bgp_id;
     Ipv4Address peer_address;
     libbgp::BgpFilterRules ingress_rules;
     libbgp::BgpFilterRules egress_rules;
@@ -42,10 +43,22 @@ public:
     void AddRoute(const Ipv4Address &prefix, const Ipv4Mask &mask, const Ipv4Address &nexthop);
 
     void SetLibbgpLogLevel(libbgp::LogLevel log_level);
+    void SetBgpId(Ipv4Address bgp_id);
+    void SetHoldTimer(Time hold_timer);
+
+    void HandleAccept(Ptr<Socket> socket, const Address &src);
+    bool HandleRequest(Ptr<Socket> socket, const Address &src);
     
 private:
+    Time _hold_timer;
+
     BgpLog _logger;
-    BgpRouting _routing;
+    BgpNs3Clock _clock;
+    Ipv4Address _bgp_id;
+
+    Ptr<BgpRouting> _routing;
+    Ptr<Socket> _listen_socket;
+    Ptr<Ipv4RoutingProtocol> _old_protocol;
 
     std::vector<Ptr<BgpNs3Fsm>> _fsms;
     std::vector<Peer> _peers;
@@ -54,6 +67,8 @@ private:
     libbgp::BgpRib _rib;
     libbgp::RouteEventBus _bus;
     libbgp::LogLevel _log_level;
+
+    bool _running;
 };
 
 }
