@@ -10,6 +10,8 @@
 
 namespace ns3 {
 
+class Bgp;
+
 class Peer {
 public:
     uint32_t asn;
