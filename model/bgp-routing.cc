@@ -24,6 +24,15 @@ BgpRouting::BgpRouting() {
     _rib = nullptr;
 }
 
+TypeId BgpRouting::GetTypeId (void) {
+    static TypeId tid = TypeId ("ns3::BgpRouting")
+        .SetParent<Ipv4RoutingProtocol>()
+        .SetGroupName ("Internet")
+        .AddConstructor<BgpRouting>();
+
+    return tid;
+}
+
 Ptr<Ipv4Route> BgpRouting::RouteOutput (Ptr<Packet> p, const Ipv4Header &header, 
     Ptr<NetDevice> oif, Socket::SocketErrno &sockerr) {
     NS_ASSERT(_ipv4 != nullptr);
