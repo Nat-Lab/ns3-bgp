@@ -152,5 +152,34 @@ void BgpRouting::SetRib(const libbgp::BgpRib *rib) {
     _rib = rib;
 }
 
+/* things we don't care */
+void BgpRouting::NotifyInterfaceUp (uint32_t interface) {}
+void BgpRouting::NotifyInterfaceDown (uint32_t interface) {}
+void BgpRouting::NotifyAddAddress (uint32_t interface, Ipv4InterfaceAddress address) {}
+void BgpRouting::NotifyRemoveAddress (uint32_t interface, Ipv4InterfaceAddress address) {}
+
+/* this one we do care */
+void BgpRouting::SetIpv4 (Ptr<Ipv4> ipv4) {
+    _ipv4 = ipv4;
+}
+
+void BgpRouting::PrintRoutingTable (Ptr<OutputStreamWrapper> stream, Time::Unit unit) const {
+    std::ostream* os = stream->GetStream();
+
+    *os << "BGP routing table for node" << _ipv4->GetObject<Node>()->GetId()
+        << ", time: " << Simulator::Now().As(unit) << std::endl;
+
+    uint8_t print_buffer[4096];
+
+    for (const libbgp::BgpRibEntry &entry : _rib->get()) {
+        *os << Ipv4Address(ntohl(entry.route.getPrefix())) << "/" << (int) entry.route.getLength()
+            << " from " << Ipv4Address(ntohl(entry.src_router_id)) << std::endl
+            << "Attribues: " << std::endl;
+        for (const std::shared_ptr<libbgp::BgpPathAttrib> &attr : entry.attribs) {
+            attr->print(1, print_buffer, 4096);
+            *os << print_buffer;
+        }
+    } 
+}
 
 }
