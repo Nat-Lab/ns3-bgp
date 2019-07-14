@@ -14,12 +14,16 @@ class Bgp;
 
 class Peer {
 public:
-    uint32_t asn;
-    Ipv4Address address;
+    uint32_t local_asn;
+    uint32_t peer_asn;
+    Ipv4Address bgp_id;
+    Ipv4Address peer_address;
     libbgp::BgpFilterRules ingress_rules;
     libbgp::BgpFilterRules egress_rules;
+    bool passive;
 
 private:
+    friend Bgp;
     uint32_t device_id;
 };
 
