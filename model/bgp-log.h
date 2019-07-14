@@ -18,7 +18,7 @@ namespace ns3 {
  * @brief The libbgp log forwarder class.
  * 
  */
-class BgpLog : public libbgp::BgpLogHandler {
+class BgpLog : public libbgp::BgpLogHandler, public SimpleRefCount<BgpLog> {
 public:
     BgpLog(const char *owner);
     ~BgpLog();
