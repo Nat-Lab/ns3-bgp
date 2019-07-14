@@ -5,8 +5,11 @@
 namespace ns3 {
 
 class BgpLog : public libbgp::BgpLogHandler {
+public:
     BgpLog(const char *owner);
     ~BgpLog();
+
+    void SetOwner(const char *owner);
 
 protected:
     void logImpl(const char* str);

@@ -18,4 +18,9 @@ void BgpLog::logImpl(const char* str) {
     NS_LOG_INFO(owner << " libbgp: " << str);
 }
 
+void BgpLog::SetOwner(const char* owner) {
+    free(this->owner);
+    this->owner = strdup(owner);
+}
+
 }
