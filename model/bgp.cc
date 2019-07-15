@@ -271,8 +271,8 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
     }
 
     for (const Ptr<Session> session : _sessions) {
-        if (session->peer == peer) {
-            NS_LOG_INFO("session or fsm for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist, closing socket.");
+        if (session->peer == peer && session->fsm->getState() == libbgp::ESTABLISHED) {
+            NS_LOG_INFO("session or fsm for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist and established, closing socket.");
             socket->Close();
             return false;
         }
