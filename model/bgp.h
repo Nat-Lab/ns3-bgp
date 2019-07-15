@@ -67,7 +67,7 @@ private:
     bool CreateFsmForPeer(Ptr<Peer> peer);
 
     void HandleAccept(Ptr<Socket> socket, const Address &src);
-    bool HandleRequest(Ptr<Socket> socket, const Address &src);
+    bool HandleConnectRequest(Ptr<Socket> socket, const Address &src);
     void HandleConnect(Ptr<Socket> socket);
     void HandleConnectFailed(Ptr<Socket> socket);
     void HandleClose(Ptr<Socket> socket);

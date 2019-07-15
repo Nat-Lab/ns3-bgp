@@ -103,7 +103,7 @@ void Bgp::StartApplication(void) {
     NS_LOG_LOGIC("registering callbacks...");
 
     _listen_socket->SetAcceptCallback(
-        MakeCallback(&Bgp::HandleRequest, this),
+        MakeCallback(&Bgp::HandleConnectRequest, this),
         MakeCallback(&Bgp::HandleAccept, this)
     );
     
@@ -170,7 +170,9 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
     peer_socket->SetCloseCallbacks(
         MakeCallback(&Bgp::HandleClose, this),
         MakeCallback(&Bgp::HandleClose, this)
-    );    
+    );
+
+    return true;
 }
 
 bool Bgp::CreateFsmForPeer(Ptr<Peer> peer) {
@@ -211,6 +213,10 @@ bool Bgp::CreateFsmForPeer(Ptr<Peer> peer) {
     return true;
 }
 
+bool Bgp::HandleConnectRequest(Ptr<Socket> socket, const Address &src) {
+    return true;
+}
+
 void Bgp::HandleConnect(Ptr<Socket> socket) {
     NS_LOG_LOGIC("handling incoming connection: " << socket);
 
@@ -240,12 +246,16 @@ void Bgp::HandleConnect(Ptr<Socket> socket) {
             peer->_in_handler = in_handler;
 
             socket->SetRecvCallback(MakeCallback(&BgpNs3SocketIn::HandleRead, in_handler));
-
+            socket->SetCloseCallbacks(
+                MakeCallback(&Bgp::HandleClose, this),
+                MakeCallback(&Bgp::HandleClose, this)
+            );
             return;
         }
     }
 
     NS_LOG_WARN("no matching peer found for souce address " << peer_ipv4);
+    socket->Close();
 }
 
 void Bgp::AddPeer(const Peer &peer) {
