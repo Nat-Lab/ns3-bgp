@@ -121,14 +121,15 @@ void Bgp::StartApplication(void) {
             continue;
         }
 
-        // allow other events to run too.
-        Simulator::ScheduleNow(MakeEvent(&Bgp::ConnectPeer, this, peer));   
+        // allow other events to run too. 
+        Simulator::ScheduleNow(&Bgp::ConnectPeer, this, peer);
+        
     }
 
     NS_LOG_LOGIC("init complete.");
     _running = true;
 
-    Simulator::Schedule(_clock_interval, MakeEvent(&Bgp::Tick, this));
+    Simulator::Schedule(_clock_interval, &Bgp::Tick, this);
 }
 
 void Bgp::StopApplication(void) {
@@ -161,7 +162,7 @@ void Bgp::Tick() {
         session->fsm->tick();
     }
 
-    if (_running) Simulator::Schedule(_clock_interval, MakeEvent(&Bgp::Tick, this));
+    if (_running) Simulator::Schedule(_clock_interval, &Bgp::Tick, this);
     else NS_LOG_LOGIC("ticker stopped.");
 }
 
