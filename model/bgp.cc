@@ -120,8 +120,8 @@ void Bgp::Tick() {
     // TODO connect retry
 
     NS_LOG_LOGIC("ticking FSMs...");
-    for (Ptr<BgpNs3Fsm> fsm : _fsms) {
-        fsm->tick();
+    for (Ptr<Peer> peer : _peers) {
+        if (peer->_fsm != nullptr) peer->_fsm->tick();
     }
 
     if (_running) Simulator::Schedule(_clock_interval, MakeEvent(&Bgp::Tick, this));
@@ -199,7 +199,6 @@ bool Bgp::CreateFsmForPeer(Ptr<Peer> peer) {
 
     Ptr<BgpNs3Fsm> peer_fsm = Create<BgpNs3Fsm>(peer_config);
     peer->_fsm = peer_fsm;
-    _fsms.push_back(peer_fsm);
 
     return true;
 }

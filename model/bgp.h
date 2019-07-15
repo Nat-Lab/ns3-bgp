@@ -28,8 +28,8 @@ public:
 
 private:
     friend Bgp;
+    friend BgpNs3SocketIn;
 
-    uint32_t _device_id;
     Ptr<BgpNs3Fsm> _fsm;
     Ptr<Socket> _socket;
     Ptr<BgpLog> _logger;
@@ -81,7 +81,6 @@ private:
     Ptr<Socket> _listen_socket;
     Ptr<Ipv4RoutingProtocol> _old_protocol;
 
-    std::vector<Ptr<BgpNs3Fsm>> _fsms;
     std::vector<Ptr<Peer>> _peers;
 
     libbgp::BgpConfig _template;
