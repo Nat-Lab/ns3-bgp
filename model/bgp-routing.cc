@@ -153,6 +153,32 @@ Ptr<NetDevice> BgpRouting::GetDeviceByNexthop(const Ipv4Address &nexthop) const 
 }
 
 /**
+ * @brief Look for the interface address that can reach a given nexthop.
+ * 
+ * Return address if found. If not found, a 0.0.0.0 address will be returned
+ * and a warning will be logger.
+ * 
+ * @param nexthop Nexthop.
+ * @return Ipv4InterfaceAddress Interface address.
+ */
+Ipv4InterfaceAddress BgpRouting::GetAddressByNexthop(const Ipv4Address &nexthop) const {
+    uint32_t n_ifaces = _ipv4->GetNInterfaces();
+
+    for (uint32_t iface_id = 0; iface_id < n_ifaces; iface_id++) {
+        uint32_t n_addrs = _ipv4->GetNAddresses(iface_id);
+        for (uint32_t addr_id = 0; addr_id < n_addrs; addr_id++) {
+            Ipv4InterfaceAddress addr = _ipv4->GetAddress(iface_id, addr_id);
+            Ipv4Mask mask = addr.GetMask();
+            if (addr.GetLocal().CombineMask(mask) == nexthop.CombineMask(mask)) {
+                return addr;
+            }           
+        }
+    }
+
+    return Ipv4InterfaceAddress(Ipv4Address((uint32_t) 0), Ipv4Mask((uint32_t) 0));
+}
+
+/**
  * @brief Set the libbgp Routing Information Base to use.
  * 
  * @param rib The libbgp RIB.
