@@ -162,10 +162,16 @@ bool Bgp::ConnectPeer(Peer &peer) {
     peer_socket->SetCloseCallbacks(
         MakeCallback(&Bgp::HandleClose, this),
         MakeCallback(&Bgp::HandleClose, this)
-    );
+    );    
+}
 
-    // TODO create socket
-    
+void Bgp::CreateFsmForPeer(Peer &peer) {
+    Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer.peer_address);
+
+    if (local_address == nullptr) {
+        NS_LOG_WARN("peer AS" << peer.peer_asn << " (" << peer.peer_address << ") unreachable on any device.");
+        return;
+    }
 
     NS_LOG_LOGIC("buliding FSM for peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
 
