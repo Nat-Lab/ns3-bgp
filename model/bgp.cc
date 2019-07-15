@@ -1,3 +1,13 @@
+/**
+ * @file bgp.cc
+ * @author Nato Morichika <nat@nat.moe>
+ * @brief BGP module for ns3.
+ * @version 0.1
+ * @date 2019-07-15
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 #include <arpa/inet.h>
 #include "bgp.h"
 #include "ns3/log.h"
@@ -12,6 +22,10 @@ namespace ns3 {
 NS_LOG_COMPONENT_DEFINE("Bgp");
 NS_OBJECT_ENSURE_REGISTERED(Bgp);
 
+/**
+ * @brief Drop this session
+ * 
+ */
 void Session::Drop() {
     socket->SetRecvCallback(MakeNullCallback<void, Ptr<Socket>>());
     socket->SetCloseCallbacks(
@@ -20,9 +34,6 @@ void Session::Drop() {
     );
     socket->Close();
     socket = nullptr;
-
-    //out_handler->setStateChangeCallback(MakeNullCallback<void, Ptr<Socket>, int, int>());
-    //fsm->stop();
     fsm->resetHard();
     
 }
@@ -188,9 +199,6 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
     Ptr<Socket> peer_socket = Socket::CreateSocket(GetNode(), TcpSocketFactory::GetTypeId());
 
     NS_LOG_LOGIC("using local address: " << local_address);
-
-    peer->_local_addr = local_address;
-
     NS_LOG_LOGIC("registering callbacks...");
 
     peer_socket->SetConnectCallback(
@@ -280,7 +288,6 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
     }
     
     Ipv4InterfaceAddress local_addr = _routing->GetAddressByNexthop(peer_sockaddr.GetIpv4());
-    peer->_local_addr = local_addr;
 
     if (local_addr.GetLocal().Get() == 0) {
         NS_LOG_WARN("peer AS" << peer->peer_asn << " (" << peer->peer_address << ") unreachable on any device.");
@@ -338,41 +345,86 @@ void Bgp::HandleStateChange(Ptr<Socket> socket, int old_state, int new_state) {
     }
 }
 
+/**
+ * @brief Add a peer to the BGP application.
+ * 
+ * @param peer Peer to add.
+ */
 void Bgp::AddPeer(const Peer &peer) {
     NS_ASSERT(!_running);
     _peers.push_back(Create<Peer>(peer));
 }
 
+/**
+ * @brief Add a route to BGP routing table. 
+ * 
+ * @param route The route.
+ * @param nexthop Nexthop.
+ */
 void Bgp::AddRoute(libbgp::Route route, uint32_t nexthop) {
     NS_ASSERT(!_running);
     _rib.insert(&_logger, route, nexthop);
 }
 
+/**
+ * @brief Add a route to BGP routing table. 
+ * 
+ * @param prefix The prefix of the route in network byte order.
+ * @param mask The netmask of the route in CIDR notation.
+ * @param nexthop Nexthop.
+ */
 void Bgp::AddRoute(uint32_t prefix, uint8_t mask, uint32_t nexthop) {
     NS_ASSERT(!_running);
     AddRoute(libbgp::Route(prefix, mask), nexthop);
 }
 
+/**
+ * @brief Add a route to BGP routing table. 
+ * 
+ * @param prefix Prefix of the route.
+ * @param mask Netmask of the route.
+ * @param nexthop Nexthop of the route.
+ */
 void Bgp::AddRoute(const Ipv4Address &prefix, const Ipv4Mask &mask, const Ipv4Address &nexthop) {
     NS_ASSERT(!_running);
     AddRoute(htonl(prefix.Get()), (uint8_t) mask.GetPrefixLength(), htonl(nexthop.Get()));
 }
 
+/**
+ * @brief Set libbgp log level.
+ * 
+ * @param log_level Log level.
+ */
 void Bgp::SetLibbgpLogLevel(libbgp::LogLevel log_level) {
     NS_ASSERT(!_running);
     _log_level = log_level;
 }
 
+/**
+ * @brief Set local router ID.
+ * 
+ * @param bgp_id Router ID.
+ */
 void Bgp::SetBgpId(Ipv4Address bgp_id) {
     NS_ASSERT(!_running);
     _bgp_id = bgp_id;
 }
 
+/**
+ * @brief Set local hold timer.
+ * 
+ * @param hold_timer Hold timer.
+ */
 void Bgp::SetHoldTimer(Time hold_timer) {
     NS_ASSERT(!_running);
     _hold_timer = hold_timer;
 }
 
+/**
+ * @brief Set Tick() interval
+ * 
+ * @param interval Tick interval.
+ */
 void Bgp::SetClockInterval(Time interval) {
     NS_ASSERT(!_running);
     _clock_interval = interval;

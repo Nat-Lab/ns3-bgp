@@ -17,24 +17,28 @@ namespace ns3 {
 class Bgp;
 class BgpNs3SocketIn;
 
+/**
+ * @brief Peer configuration class.
+ * 
+ */
 class Peer : public SimpleRefCount<Peer> {
 public:
-    uint32_t local_asn;
-    uint32_t peer_asn;
-    Ipv4Address peer_address;
-    libbgp::BgpFilterRules ingress_rules;
-    libbgp::BgpFilterRules egress_rules;
-    bool passive;
-
-private:
-    friend Bgp;
-    Ipv4InterfaceAddress _local_addr;
+    uint32_t local_asn; //!< local ASN.
+    uint32_t peer_asn; //!< peer ASN.
+    Ipv4Address peer_address; //!< peer's address.
+    libbgp::BgpFilterRules ingress_rules; //!< ingress router filter rules. See libbgp documents.
+    libbgp::BgpFilterRules egress_rules; //!< egress router filter rules. See libbgp documents.
+    bool passive; //!< Passive peering (don't send OPEN)
 };
 
+/**
+ * @brief Session information class.
+ * 
+ */
 class Session : public SimpleRefCount<Session> {
 public:
     Ptr<Peer> peer;
-    Ptr<BgpNs3Fsm> fsm;
+    Ptr<BgpNs3Fsm> fsm; 
     Ptr<Socket> socket;
     Ptr<BgpLog> logger;
     Ptr<BgpNs3SocketOut> out_handler;
@@ -43,6 +47,10 @@ public:
     void Drop();
 };
 
+/**
+ * @brief The Bgp Application.
+ * 
+ */
 class Bgp : public Application {
 public:
     Bgp();

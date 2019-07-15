@@ -29,6 +29,11 @@ BgpLog::~BgpLog() {
     free(owner);
 }
 
+/**
+ * @brief Log implementation. See libbgp document.
+ * 
+ * @param str String to log.
+ */
 void BgpLog::logImpl(const char* str) {
     char* str_stripped = strdup(str);
     str_stripped[strlen(str_stripped)-1] = '\0';
@@ -39,7 +44,7 @@ void BgpLog::logImpl(const char* str) {
 /**
  * @brief Set the owner (prefix) of the log message.
  * 
- * @param owner 
+ * @param owner The owner (prefix) of the log message
  */
 void BgpLog::SetOwner(const char* owner) {
     free(this->owner);
