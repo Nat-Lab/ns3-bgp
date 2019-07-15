@@ -244,38 +244,65 @@ void Bgp::HandleClose(Ptr<Socket> socket) {
     NS_FATAL_ERROR("close handler called without matching peer.");
 }
 
-void Bgp::HandleConnectIn(Ptr<Socket> socket, const Address &peer) {
+bool Bgp::SetupPeer(Ptr<Peer> peer, Ptr<Socket> socket) {
+    NS_ASSERT(peer->_fsm == nullptr && peer->_socket == nullptr);
+    peer->_socket = socket;
+
+    if (!CreateFsmForPeer(peer)) {
+        NS_LOG_WARN("failed to create FSM for peer peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
+        socket->Close();
+        peer->_socket = nullptr;
+        return false;
+    }
+
+    Ptr<BgpNs3SocketIn> in_handler = Create<BgpNs3SocketIn>(peer);
+    peer->_in_handler = in_handler;
+
+    socket->SetRecvCallback(MakeCallback(&BgpNs3SocketIn::HandleRead, in_handler));
+    socket->SetCloseCallbacks(
+        MakeCallback(&Bgp::HandleClose, this),
+        MakeCallback(&Bgp::HandleClose, this)
+    );
+    return true;
+}
+
+void Bgp::HandleConnectIn(Ptr<Socket> socket, const Address &peer_addr) {
     NS_LOG_LOGIC("handling incoming connection: " << socket);
 
-    Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer);
+    Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer_addr);
     
     for (Ptr<Peer> peer : _peers) {
         if (peer->peer_address == peer_ipv4) {
-            peer->_socket = socket;
-
-            NS_ASSERT(peer->_fsm == nullptr);
-
-            if (!CreateFsmForPeer(peer)) {
-                NS_LOG_WARN("failed to create FSM for peer peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
-                socket->Close();
-                peer->_socket = nullptr;
-                return;
-            }
-
-            Ptr<BgpNs3SocketIn> in_handler = Create<BgpNs3SocketIn>(peer);
-            peer->_in_handler = in_handler;
-
-            socket->SetRecvCallback(MakeCallback(&BgpNs3SocketIn::HandleRead, in_handler));
-            socket->SetCloseCallbacks(
-                MakeCallback(&Bgp::HandleClose, this),
-                MakeCallback(&Bgp::HandleClose, this)
-            );
-            return;
+            SetupPeer(peer, socket);
+            NS_ASSERT(peer->_fsm != nullptr);
         }
     }
 
     NS_LOG_WARN("no matching peer found for souce address " << peer_ipv4);
     socket->Close();
+}
+
+void Bgp::HandleConnectOut(Ptr<Socket> socket) {
+    NS_LOG_LOGIC("connetcing to: " << socket);
+
+    Address peer_addr;
+
+    if (socket->GetPeerName(peer_addr) == -1) {
+        NS_LOG_WARN("failed to get peer information.");
+        socket->Close();
+    }
+
+    Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer_addr);
+
+    for (Ptr<Peer> peer : _peers) {
+        if (peer->peer_address == peer_ipv4) {
+            SetupPeer(peer, socket);
+            NS_ASSERT(peer->_fsm != nullptr);
+            NS_LOG_LOGIC("invoking start on FSM for peer peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
+            peer->_fsm->start();
+        }
+    }
+
 }
 
 void Bgp::AddPeer(const Peer &peer) {

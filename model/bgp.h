@@ -65,6 +65,7 @@ private:
 
     bool ConnectPeer(Ptr<Peer> peer);
     bool CreateFsmForPeer(Ptr<Peer> peer);
+    bool SetupPeer(Ptr<Peer> peer, Ptr<Socket> socket);
 
     void HandleConnectIn(Ptr<Socket> socket, const Address &src);
     bool HandleConnectInRequest(Ptr<Socket> socket, const Address &src);
