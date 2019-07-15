@@ -57,7 +57,7 @@ TypeId Bgp::GetTypeId (void) {
     return tid;
 }
 
-Bgp::Bgp() : _logger("(init)"), _rib(&_logger) {
+Bgp::Bgp() : _logger("(local)"), _rib(&_logger) {
     _log_level = libbgp::INFO;
 
     _logger.setLogLevel(_log_level);
