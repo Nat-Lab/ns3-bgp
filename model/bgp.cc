@@ -11,6 +11,14 @@ namespace ns3 {
 NS_LOG_COMPONENT_DEFINE("Bgp");
 NS_OBJECT_ENSURE_REGISTERED(Bgp);
 
+void Peer::Reset() {
+    _fsm->resetHard();
+    _socket->SetRecvCallback(MakeNullCallback<void, Ptr<Socket>>());
+    _socket->Close();
+    _fsm = nullptr;
+    _socket = nullptr;
+}
+
 TypeId Bgp::GetTypeId (void) {
     static TypeId tid = TypeId("ns3::Bgp")
         .SetParent<Application>()
@@ -227,6 +235,11 @@ void Bgp::HandleConnect(Ptr<Socket> socket) {
                 peer->_socket = nullptr;
                 return;
             }
+
+            Ptr<BgpNs3SocketIn> in_handler = Create<BgpNs3SocketIn>(peer);
+            peer->_in_handler = in_handler;
+
+            socket->SetRecvCallback(MakeCallback(&BgpNs3SocketIn::HandleRead, in_handler));
 
             return;
         }

@@ -35,6 +35,8 @@ private:
     Ptr<BgpLog> _logger;
     Ptr<BgpNs3SocketOut> _out_handler;
     Ptr<BgpNs3SocketIn> _in_handler;
+
+    void Reset();
 };
 
 class Bgp : public Application {
