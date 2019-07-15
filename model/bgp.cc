@@ -3,6 +3,7 @@
 #include "ns3/log.h"
 #include "ns3/enum.h"
 #include "ns3/ipv4-list-routing.h"
+#include "ns3/ipv4-static-routing.h"
 #include "ns3/tcp-socket-factory.h"
 #include "ns3/simulator.h"
 
@@ -32,7 +33,7 @@ TypeId Bgp::GetTypeId (void) {
         .SetParent<Application>()
         .SetGroupName("Internet")
         .AddConstructor<Bgp>()
-        .AddAttribute("libbgp Log Level", "Log level for libbgp to use",
+        .AddAttribute("LibbgpLogLevel", "Log level for libbgp to use",
             EnumValue(libbgp::INFO),
             MakeEnumAccessor(&Bgp::_log_level),
             MakeEnumChecker(
@@ -41,15 +42,15 @@ TypeId Bgp::GetTypeId (void) {
                 libbgp::WARN, "Warning",
                 libbgp::INFO, "Info",
                 libbgp::DEBUG, "Debug"))
-        .AddAttribute("Router ID", "Local BGP ID",
+        .AddAttribute("RouterID", "Local BGP ID",
             Ipv4AddressValue(),
             MakeIpv4AddressAccessor(&Bgp::_bgp_id),
             MakeIpv4AddressChecker())
-        .AddAttribute("Hold Timer", "Hold Timer",
+        .AddAttribute("HoldTimer", "Hold Timer",
             TimeValue(Seconds(120)),
             MakeTimeAccessor(&Bgp::_hold_timer),
             MakeTimeChecker(Seconds(3), Seconds(UINT16_MAX)))
-        .AddAttribute("Clock Interval", "Time to wait between ticking FSMs",
+        .AddAttribute("ClockInterval", "Time to wait between ticking FSMs",
             TimeValue(Seconds(1)),
             MakeTimeAccessor(&Bgp::_clock_interval),
             MakeTimeChecker());
@@ -92,7 +93,8 @@ void Bgp::StartApplication(void) {
     NS_LOG_LOGIC("installing BgpRouting...");
 
     Ptr<Ipv4ListRouting> list_routing = CreateObject<Ipv4ListRouting>();
-    list_routing->AddRoutingProtocol(_old_protocol, 10);
+    //list_routing->AddRoutingProtocol(_old_protocol, 10);
+    list_routing->AddRoutingProtocol(CreateObject<Ipv4StaticRouting>(), 10);
     list_routing->AddRoutingProtocol(_routing, 5);
     ipv4->SetRoutingProtocol(list_routing);
 
@@ -165,7 +167,6 @@ void Bgp::StopApplication(void) {
 void Bgp::Tick() {
     // TODO connect retry
 
-    NS_LOG_LOGIC("ticking FSMs...");
     for (Ptr<Peer> peer : _peers) {
         if (peer->_fsm != nullptr) peer->_fsm->tick();
     }
@@ -189,14 +190,16 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
         return false;
     }
 
-    NS_LOG_LOGIC("create and bind socket for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist, skipping.");
+    NS_LOG_LOGIC("create and bind socket for peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
 
     Ptr<Socket> peer_socket = Socket::CreateSocket(GetNode(), TcpSocketFactory::GetTypeId());
 
-    if (peer_socket->Bind(InetSocketAddress(local_address.GetLocal(), 179)) == -1) {
+    NS_LOG_LOGIC("using local address: " << local_address);
+
+    /* if (peer_socket->Bind(InetSocketAddress(Ipv4Address::GetAny(), 179)) == -1) {
         NS_LOG_ERROR("failed to bind.");
         return false;
-    }
+    }*/
 
     NS_LOG_LOGIC("registering callbacks...");
 
@@ -204,6 +207,11 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
         MakeCallback(&Bgp::HandleConnectOut, this),
         MakeCallback(&Bgp::HandleConnectOutFailed, this)
     );
+
+    if (peer_socket->Connect(InetSocketAddress(peer->peer_address, 179)) == -1) {
+        NS_LOG_ERROR("failed to connect: " << strerror(errno));
+        return false;
+    }
 
     return true;
 }
@@ -257,32 +265,39 @@ void Bgp::HandleConnectOutFailed(Ptr<Socket> socket) {
 void Bgp::HandleClose(Ptr<Socket> socket) {
     NS_LOG_LOGIC("handleing connection shutdown: " << socket);
 
-    Address peer;
-
-    if (socket->GetPeerName(peer) == -1) {
-        NS_LOG_WARN("failed to get peer information.");
-        socket->Close();
-    }
-
-    Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer);
-
     for (Ptr<Peer> peer : _peers) {
-        if (peer->peer_address == peer_ipv4) {
+        if (peer->_socket == socket) {
             NS_LOG_INFO("resetting peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
             peer->Reset();
             return;
         }
     }
-
-    NS_FATAL_ERROR("close handler called without matching peer.");
 }
 
 bool Bgp::SetupPeer(Ptr<Peer> peer, Ptr<Socket> socket) {
-    NS_ASSERT(peer->_fsm == nullptr && peer->_socket == nullptr);
+    NS_LOG_LOGIC("setup peering for AS" << peer->peer_asn << " (" << peer->peer_address << ").");
+
+    if (peer->_fsm != nullptr && peer->_socket != nullptr) {
+        NS_LOG_INFO("found ongoing peering for AS" << peer->peer_asn << " (" << peer->peer_address << ").");
+
+        if (peer->_fsm->getState() == libbgp::ESTABLISHED && peer->peer_asn > peer->local_asn) {
+            NS_LOG_INFO("keeping old connection.");
+            socket->Close();
+            return false;
+        } else {
+            NS_ASSERT(peer->_socket != socket);
+            Ptr<Socket> old_socket = peer->_socket;
+            peer->_socket = socket;
+            old_socket->Close();
+            NS_LOG_INFO("replaced old socket (" << old_socket << ") with new (" << socket << ")");
+        }
+        
+    }
+
     peer->_socket = socket;
 
     if (!CreateFsmForPeer(peer)) {
-        NS_LOG_WARN("failed to create FSM for peer peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
+        NS_LOG_WARN("failed to create FSM for peer AS" << peer->peer_asn << " (" << peer->peer_address << "), dropping connection.");
         socket->Close();
         peer->_socket = nullptr;
         return false;
@@ -300,24 +315,23 @@ bool Bgp::SetupPeer(Ptr<Peer> peer, Ptr<Socket> socket) {
 }
 
 void Bgp::HandleConnectIn(Ptr<Socket> socket, const Address &peer_addr) {
-    NS_LOG_LOGIC("handling incoming connection: " << socket);
+    InetSocketAddress peer_sockaddr = InetSocketAddress::ConvertFrom(peer_addr);
 
-    Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer_addr);
+    NS_LOG_LOGIC("handling incoming connection from: " << peer_sockaddr.GetIpv4());
     
     for (Ptr<Peer> peer : _peers) {
-        if (peer->peer_address == peer_ipv4) {
+        if (peer->peer_address == peer_sockaddr.GetIpv4()) {
             SetupPeer(peer, socket);
             NS_ASSERT(peer->_fsm != nullptr);
+            return;
         }
     }
 
-    NS_LOG_WARN("no matching peer found for souce address " << peer_ipv4);
     socket->Close();
+    NS_LOG_WARN("no matching peer found for souce address " << peer_sockaddr.GetIpv4());
 }
 
 void Bgp::HandleConnectOut(Ptr<Socket> socket) {
-    NS_LOG_LOGIC("connetcing to: " << socket);
-
     Address peer_addr;
 
     if (socket->GetPeerName(peer_addr) == -1) {
@@ -325,17 +339,23 @@ void Bgp::HandleConnectOut(Ptr<Socket> socket) {
         socket->Close();
     }
 
-    Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer_addr);
+    InetSocketAddress peer_sockaddr = InetSocketAddress::ConvertFrom(peer_addr);
+
+    NS_LOG_LOGIC("connecting to " << peer_sockaddr.GetIpv4() << "...");
 
     for (Ptr<Peer> peer : _peers) {
-        if (peer->peer_address == peer_ipv4) {
-            SetupPeer(peer, socket);
-            NS_ASSERT(peer->_fsm != nullptr);
-            NS_LOG_LOGIC("invoking start on FSM for peer peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
-            peer->_fsm->start();
+        if (peer->peer_address == peer_sockaddr.GetIpv4()) {
+            if (SetupPeer(peer, socket)) {
+                NS_ASSERT(peer->_fsm != nullptr);
+                NS_LOG_LOGIC("invoking start on FSM for peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
+                peer->_fsm->start();
+            }
+            return;
         }
     }
 
+    socket->Close();
+    NS_FATAL_ERROR("connect-out called but no matching peer found.");
 }
 
 void Bgp::AddPeer(const Peer &peer) {

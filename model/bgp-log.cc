@@ -30,7 +30,10 @@ BgpLog::~BgpLog() {
 }
 
 void BgpLog::logImpl(const char* str) {
-    NS_LOG_INFO(owner << " libbgp: " << str);
+    char* str_stripped = strdup(str);
+    str_stripped[strlen(str_stripped)-1] = '\0';
+    NS_LOG_INFO(owner << " libbgp: " << str_stripped);
+    free(str_stripped);
 }
 
 /**
