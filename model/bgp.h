@@ -52,17 +52,13 @@ public:
 	void StopApplication(void);
 
     void AddPeer(const Peer &peer);
-
     void AddRoute(libbgp::Route route, uint32_t nexthop);
     void AddRoute(uint32_t prefix, uint8_t mask, uint32_t nexthop);
     void AddRoute(const Ipv4Address &prefix, const Ipv4Mask &mask, const Ipv4Address &nexthop);
-
     void SetLibbgpLogLevel(libbgp::LogLevel log_level);
     void SetBgpId(Ipv4Address bgp_id);
     void SetHoldTimer(Time hold_timer);
     void SetClockInterval(Time interval);
-
-    // TODO: add/set: assert !_running
 
 private:
     void Tick();

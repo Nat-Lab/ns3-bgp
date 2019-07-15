@@ -309,8 +309,6 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
     peer_config.peering_lan_length = local_addr.GetMask().GetPrefixLength();
     peer_config.peering_lan_prefix = htonl(local_addr.GetLocal().CombineMask(local_addr.GetMask()).Get());
 
-    // TODO: clean BgpNs3SocketIn to take only fsm.
-
     Ptr<BgpNs3Fsm> peer_fsm = Create<BgpNs3Fsm>(peer_config);
     Ptr<Session> peer_session = Create<Session>();
     Ptr<BgpNs3SocketIn> in_handler = Create<BgpNs3SocketIn>(peer_fsm);
@@ -341,23 +339,43 @@ void Bgp::HandleStateChange(Ptr<Socket> socket, int old_state, int new_state) {
 }
 
 void Bgp::AddPeer(const Peer &peer) {
+    NS_ASSERT(!_running);
     _peers.push_back(Create<Peer>(peer));
 }
 
 void Bgp::AddRoute(libbgp::Route route, uint32_t nexthop) {
+    NS_ASSERT(!_running);
     _rib.insert(&_logger, route, nexthop);
 }
 
 void Bgp::AddRoute(uint32_t prefix, uint8_t mask, uint32_t nexthop) {
+    NS_ASSERT(!_running);
     AddRoute(libbgp::Route(prefix, mask), nexthop);
 }
 
 void Bgp::AddRoute(const Ipv4Address &prefix, const Ipv4Mask &mask, const Ipv4Address &nexthop) {
+    NS_ASSERT(!_running);
     AddRoute(htonl(prefix.Get()), (uint8_t) mask.GetPrefixLength(), htonl(nexthop.Get()));
 }
 
 void Bgp::SetLibbgpLogLevel(libbgp::LogLevel log_level) {
+    NS_ASSERT(!_running);
     _log_level = log_level;
+}
+
+void Bgp::SetBgpId(Ipv4Address bgp_id) {
+    NS_ASSERT(!_running);
+    _bgp_id = bgp_id;
+}
+
+void Bgp::SetHoldTimer(Time hold_timer) {
+    NS_ASSERT(!_running);
+    _hold_timer = hold_timer;
+}
+
+void Bgp::SetClockInterval(Time interval) {
+    NS_ASSERT(!_running);
+    _clock_interval = interval;
 }
 
 }
