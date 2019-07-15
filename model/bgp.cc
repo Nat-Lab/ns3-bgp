@@ -217,8 +217,12 @@ bool Bgp::HandleConnectRequest(Ptr<Socket> socket, const Address &src) {
     return true;
 }
 
-void Bgp::HandleConnect(Ptr<Socket> socket) {
-    NS_LOG_LOGIC("handling incoming connection: " << socket);
+void Bgp::HandleConnectFailed(Ptr<Socket> socket) {
+    NS_LOG_WARN("socket connect failed: " << socket);
+}
+
+void Bgp::HandleClose(Ptr<Socket> socket) {
+    NS_LOG_LOGIC("handleing connection shutdown: " << socket);
 
     Address peer;
 
@@ -226,6 +230,22 @@ void Bgp::HandleConnect(Ptr<Socket> socket) {
         NS_LOG_WARN("failed to get peer information.");
         socket->Close();
     }
+
+    Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer);
+
+    for (Ptr<Peer> peer : _peers) {
+        if (peer->peer_address == peer_ipv4) {
+            NS_LOG_INFO("resetting peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
+            peer->Reset();
+            return;
+        }
+    }
+
+    NS_FATAL_ERROR("close handler called without matching peer.");
+}
+
+void Bgp::HandleAccept(Ptr<Socket> socket, const Address &peer) {
+    NS_LOG_LOGIC("handling incoming connection: " << socket);
 
     Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer);
     
