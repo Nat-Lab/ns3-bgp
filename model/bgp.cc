@@ -101,9 +101,9 @@ void Bgp::StartApplication(void) {
     
     NS_LOG_LOGIC("sending OPEN message to peers...");
 
-    for (Peer &peer : _peers) {
-        if (peer.passive) {
-            NS_LOG_LOGIC("skipping passive peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
+    for (Ptr<Peer> &peer : _peers) {
+        if (peer->passive) {
+            NS_LOG_LOGIC("skipping passive peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
             continue;
         }
 
@@ -128,22 +128,22 @@ void Bgp::Tick() {
     else NS_LOG_LOGIC("ticker stopped.");
 }
 
-bool Bgp::ConnectPeer(Peer &peer) {
-    if (peer._fsm != nullptr || peer._socket != nullptr) {
-        NS_LOG_LOGIC("socket or fsm for peer AS" << peer.peer_asn << " (" << peer.peer_address << ") already exist, skipping.");
+bool Bgp::ConnectPeer(Ptr<Peer> peer) {
+    if (peer->_fsm != nullptr || peer->_socket != nullptr) {
+        NS_LOG_LOGIC("socket or fsm for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist, skipping.");
         return false;
     }
 
-    NS_LOG_LOGIC("obtaning local address information for peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
+    NS_LOG_LOGIC("obtaning local address information for peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
 
-    Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer.peer_address);
+    Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer->peer_address);
 
     if (local_address == nullptr) {
-        NS_LOG_WARN("peer AS" << peer.peer_asn << " (" << peer.peer_address << ") unreachable on any device, skipping.");
+        NS_LOG_WARN("peer AS" << peer->peer_asn << " (" << peer->peer_address << ") unreachable on any device, skipping.");
         return false;
     }
 
-    NS_LOG_LOGIC("create and bind socket for peer AS" << peer.peer_asn << " (" << peer.peer_address << ") already exist, skipping.");
+    NS_LOG_LOGIC("create and bind socket for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist, skipping.");
 
     Ptr<Socket> peer_socket = Socket::CreateSocket(GetNode(), TcpSocketFactory::GetTypeId());
 
@@ -165,40 +165,40 @@ bool Bgp::ConnectPeer(Peer &peer) {
     );    
 }
 
-bool Bgp::CreateFsmForPeer(Peer &peer) {
-    NS_ASSERT(peer._socket != nullptr);
+bool Bgp::CreateFsmForPeer(Ptr<Peer> peer) {
+    NS_ASSERT(peer->_socket != nullptr);
 
-    Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer.peer_address);
+    Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer->peer_address);
 
     if (local_address == nullptr) {
-        NS_LOG_WARN("peer AS" << peer.peer_asn << " (" << peer.peer_address << ") unreachable on any device.");
+        NS_LOG_WARN("peer AS" << peer->peer_asn << " (" << peer->peer_address << ") unreachable on any device.");
         return false;
     }
 
-    NS_LOG_LOGIC("buliding FSM for peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
+    NS_LOG_LOGIC("buliding FSM for peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
 
     char peer_name[128];
-    snprintf(peer_name, 128, "AS%d", peer.peer_asn);
+    snprintf(peer_name, 128, "AS%d", peer->peer_asn);
     libbgp::BgpConfig peer_config(_template);
 
     Ptr<BgpLog> peer_logger = Create<BgpLog>(peer_name);
-    Ptr<BgpNs3SocketOut> peer_out_handler = Create<BgpNs3SocketOut>(peer._socket);
+    Ptr<BgpNs3SocketOut> peer_out_handler = Create<BgpNs3SocketOut>(peer->_socket);
 
-    peer._logger = peer_logger;
-    peer._out_handler = peer_out_handler;
+    peer->_logger = peer_logger;
+    peer->_out_handler = peer_out_handler;
 
-    peer_config.asn = peer.local_asn;
-    peer_config.in_filters = peer.ingress_rules;
-    peer_config.out_filters = peer.egress_rules;
+    peer_config.asn = peer->local_asn;
+    peer_config.in_filters = peer->ingress_rules;
+    peer_config.out_filters = peer->egress_rules;
     peer_config.log_handler = PeekPointer(peer_logger);
     peer_config.nexthop = htonl(local_address->GetLocal().Get());
     peer_config.out_handler = PeekPointer(peer_out_handler);
-    peer_config.peer_asn = peer.peer_asn;
+    peer_config.peer_asn = peer->peer_asn;
     peer_config.peering_lan_length = local_address->GetMask().GetPrefixLength();
     peer_config.peering_lan_prefix = htonl(local_address->GetLocal().CombineMask(local_address->GetMask()).Get());
 
     Ptr<BgpNs3Fsm> peer_fsm = Create<BgpNs3Fsm>(peer_config);
-    peer._fsm = peer_fsm;
+    peer->_fsm = peer_fsm;
     _fsms.push_back(peer_fsm);
 
     return true;
@@ -216,27 +216,17 @@ void Bgp::HandleConnect(Ptr<Socket> socket) {
 
     Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer);
     
-    for (Peer &peer : _peers) {
-        if (peer.peer_address == peer_ipv4) {
-            peer._socket = socket;
+    for (Ptr<Peer> peer : _peers) {
+        if (peer->peer_address == peer_ipv4) {
+            peer->_socket = socket;
 
-            NS_ASSERT(peer._fsm == nullptr);
+            NS_ASSERT(peer->_fsm == nullptr);
 
             if (!CreateFsmForPeer(peer)) {
-                NS_LOG_WARN("failed to create FSM for peer peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
+                NS_LOG_WARN("failed to create FSM for peer peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
                 socket->Close();
-                peer._socket = nullptr;
+                peer->_socket = nullptr;
                 return;
-            }
-
-            NS_LOG_LOGIC("invoking start on FSM for peer peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
-            NS_ASSERT(peer._fsm != nullptr);
-
-            if (peer._fsm->start() == 0) {
-                NS_LOG_WARN("failed to start FSM.");
-                socket->Close();
-                peer._fsm = nullptr;
-                peer._socket = nullptr;
             }
 
             return;
@@ -247,7 +237,8 @@ void Bgp::HandleConnect(Ptr<Socket> socket) {
 }
 
 void Bgp::AddPeer(const Peer &peer) {
-    _peers.push_back(peer);
+    Ptr<Peer> peer_ptr = Create<Peer>(peer);
+    _peers.push_back(peer_ptr);
 }
 
 void Bgp::AddRoute(libbgp::Route route, uint32_t nexthop) {

@@ -7,6 +7,7 @@
 #include "bgp-ns3-socket-out.h"
 #include "bgp-log.h"
 #include "bgp-routing.h"
+#include "bgp-ns3-socket-in.h"
 #include "ns3/application.h"
 #include "ns3/ipv4-address.h"
 #include "ns3/socket.h"
@@ -14,8 +15,9 @@
 namespace ns3 {
 
 class Bgp;
+class BgpNs3SocketIn;
 
-class Peer {
+class Peer : public SimpleRefCount<Peer> {
 public:
     uint32_t local_asn;
     uint32_t peer_asn;
@@ -32,6 +34,7 @@ private:
     Ptr<Socket> _socket;
     Ptr<BgpLog> _logger;
     Ptr<BgpNs3SocketOut> _out_handler;
+    Ptr<BgpNs3SocketIn> _in_handler;
 };
 
 class Bgp : public Application {
@@ -58,8 +61,8 @@ public:
 private:
     void Tick();
 
-    bool ConnectPeer(Peer &peer);
-    bool CreateFsmForPeer(Peer &peer);
+    bool ConnectPeer(Ptr<Peer> peer);
+    bool CreateFsmForPeer(Ptr<Peer> peer);
 
     void HandleAccept(Ptr<Socket> socket, const Address &src);
     bool HandleRequest(Ptr<Socket> socket, const Address &src);
@@ -79,7 +82,7 @@ private:
     Ptr<Ipv4RoutingProtocol> _old_protocol;
 
     std::vector<Ptr<BgpNs3Fsm>> _fsms;
-    std::vector<Peer> _peers;
+    std::vector<Ptr<Peer>> _peers;
 
     libbgp::BgpConfig _template;
     libbgp::BgpRib _rib;
