@@ -24,9 +24,7 @@ namespace ns3 {
  */
 class BgpNs3Fsm : public libbgp::BgpFsm, public SimpleRefCount<BgpNs3Fsm> {
 public:
-    BgpNs3Fsm (libbgp::BgpConfig config, Ptr<BgpLog> logger);
-private:
-    Ptr<BgpLog> _logger;
+    BgpNs3Fsm (libbgp::BgpConfig config);
 };
 
 }

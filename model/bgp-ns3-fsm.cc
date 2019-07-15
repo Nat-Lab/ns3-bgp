@@ -9,7 +9,6 @@
  * 
  */
 #include "bgp-ns3-fsm.h"
-#include "ns3/ptr.h"
 
 namespace ns3 {
 
@@ -17,10 +16,7 @@ namespace ns3 {
  * @brief Construct a new ns3-ptr wrapped libbgp BgpFsm
  * 
  * @param config BgpConfig to forward to BgpFsm.
- * @param logger logger to ref/unref when destroy.
  */
-BgpNs3Fsm::BgpNs3Fsm(libbgp::BgpConfig config, Ptr<BgpLog> logger) : libbgp::BgpFsm(config) {
-    _logger = logger;
-}
+BgpNs3Fsm::BgpNs3Fsm(libbgp::BgpConfig config) : libbgp::BgpFsm(config) {}
 
 }

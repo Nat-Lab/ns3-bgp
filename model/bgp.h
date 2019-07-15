@@ -29,6 +29,7 @@ private:
     uint32_t _device_id;
     Ptr<BgpNs3Fsm> _fsm;
     Ptr<Socket> _socket;
+    Ptr<BgpLog> _logger;
 };
 
 class Bgp : public Application {
@@ -54,7 +55,7 @@ public:
 
 private:
     void Tick();
-    
+
     bool ConnectPeer(Peer &peer);
     void CreateFsmForPeer(Peer &peer);
 
