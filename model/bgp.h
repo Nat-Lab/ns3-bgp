@@ -48,7 +48,10 @@ public:
     void SetLibbgpLogLevel(libbgp::LogLevel log_level);
     void SetBgpId(Ipv4Address bgp_id);
     void SetHoldTimer(Time hold_timer);
-    
+    void SetClockInterval(Time interval);
+
+    // TODO: add/set: assert !_running
+
 private:
     void Tick();
     bool ConnectPeer(const Peer &peer);
@@ -57,6 +60,7 @@ private:
     bool HandleRequest(Ptr<Socket> socket, const Address &src);
 
     Time _hold_timer;
+    Time _clock_interval;
 
     BgpLog _logger;
     BgpNs3Clock _clock;

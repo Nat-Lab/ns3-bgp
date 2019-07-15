@@ -4,6 +4,7 @@
 #include "ns3/enum.h"
 #include "ns3/ipv4-list-routing.h"
 #include "ns3/tcp-socket-factory.h"
+#include "ns3/simulator.h"
 
 namespace ns3 {
 
@@ -31,7 +32,11 @@ TypeId Bgp::GetTypeId (void) {
         .AddAttribute("Hold Timer", "Hold Timer",
             TimeValue(Seconds(120)),
             MakeTimeAccessor(&Bgp::_hold_timer),
-            MakeTimeChecker(Seconds(3), Seconds(UINT16_MAX)));
+            MakeTimeChecker(Seconds(3), Seconds(UINT16_MAX)))
+        .AddAttribute("Clock Interval", "Time to wait between ticking FSMs",
+            TimeValue(Seconds(1)),
+            MakeTimeAccessor(&Bgp::_clock_interval),
+            MakeTimeChecker());
 
     return tid;
 }
@@ -106,7 +111,17 @@ void Bgp::StartApplication(void) {
     NS_LOG_LOGIC("init complete.");
     _running = true;
 
-    // TODO scheduler ticker
+    Simulator::Schedule(_clock_interval, MakeEvent(&Bgp::Tick, this));
+}
+
+void Bgp::Tick() {
+    NS_LOG_LOGIC("ticking FSMs...");
+    for (Ptr<BgpNs3Fsm> fsm : _fsms) {
+        fsm->tick();
+    }
+
+    if (_running) Simulator::Schedule(_clock_interval, MakeEvent(&Bgp::Tick, this));
+    else NS_LOG_LOGIC("ticker stopped.");
 }
 
 bool Bgp::ConnectPeer(const Peer &peer) {
