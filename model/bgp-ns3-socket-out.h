@@ -4,15 +4,18 @@
 #include <libbgp/bgp-out-handler.h>
 #include "ns3/socket.h"
 #include "ns3/simple-ref-count.h"
+#include "ns3/callback.h"
 
 namespace ns3 {
 
 class BgpNs3SocketOut : public libbgp::BgpOutHandler, public SimpleRefCount<BgpNs3SocketOut> {
 public:
-    BgpNs3SocketOut(Ptr<Socket> socket);
+    BgpNs3SocketOut(Ptr<Socket> socket, Callback<void, int, int> state_change_cb);
     bool handleOut(const uint8_t *buffer, size_t length);
+    void notifyStateChange(int old_state, int new_state);
 private:
     Ptr<Socket> _socket;
+    Callback<void, int, int> _state_change_cb;
 };
 
 }
