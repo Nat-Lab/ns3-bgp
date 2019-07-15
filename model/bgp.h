@@ -54,10 +54,13 @@ public:
 
 private:
     void Tick();
-    bool ConnectPeer(const Peer &peer);
+    bool ConnectPeer(Peer &peer);
 
     void HandleAccept(Ptr<Socket> socket, const Address &src);
     bool HandleRequest(Ptr<Socket> socket, const Address &src);
+    void HandleConnect(Ptr<Socket> socket);
+    void HandleConnectFailed(Ptr<Socket> socket);
+    void HandleClose(Ptr<Socket> socket);
 
     Time _hold_timer;
     Time _clock_interval;

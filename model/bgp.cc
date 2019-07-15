@@ -92,6 +92,8 @@ void Bgp::StartApplication(void) {
         NS_FATAL_ERROR("failed to listen socket");
     }
 
+    NS_LOG_LOGIC("registering callbacks...");
+
     _listen_socket->SetAcceptCallback(
         MakeCallback(&Bgp::HandleRequest, this),
         MakeCallback(&Bgp::HandleAccept, this)
@@ -99,7 +101,7 @@ void Bgp::StartApplication(void) {
     
     NS_LOG_LOGIC("sending OPEN message to peers...");
 
-    for (const Peer &peer : _peers) {
+    for (Peer &peer : _peers) {
         if (peer.passive) {
             NS_LOG_LOGIC("skipping passive peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
             continue;
@@ -115,6 +117,8 @@ void Bgp::StartApplication(void) {
 }
 
 void Bgp::Tick() {
+    // TODO connect retry
+
     NS_LOG_LOGIC("ticking FSMs...");
     for (Ptr<BgpNs3Fsm> fsm : _fsms) {
         fsm->tick();
@@ -124,7 +128,12 @@ void Bgp::Tick() {
     else NS_LOG_LOGIC("ticker stopped.");
 }
 
-bool Bgp::ConnectPeer(const Peer &peer) {
+bool Bgp::ConnectPeer(Peer &peer) {
+    if (peer._fsm != nullptr || peer._socket != nullptr) {
+        NS_LOG_LOGIC("socket or fsm for peer AS" << peer.peer_asn << " (" << peer.peer_address << ") already exist, skipping.");
+        return false;
+    }
+
     NS_LOG_LOGIC("obtaning local address information for peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
 
     Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer.peer_address);
@@ -134,9 +143,29 @@ bool Bgp::ConnectPeer(const Peer &peer) {
         return false;
     }
 
+    NS_LOG_LOGIC("create and bind socket for peer AS" << peer.peer_asn << " (" << peer.peer_address << ") already exist, skipping.");
+
+    Ptr<Socket> peer_socket = Socket::CreateSocket(GetNode(), TcpSocketFactory::GetTypeId());
+
+    if (peer_socket->Bind(InetSocketAddress(local_address->GetLocal(), 179)) == -1) {
+        NS_LOG_ERROR("failed to bind.");
+        return false;
+    }
+
+    NS_LOG_LOGIC("registering callbacks...");
+
+    peer_socket->SetConnectCallback(
+        MakeCallback(&Bgp::HandleConnect, this),
+        MakeCallback(&Bgp::HandleConnectFailed, this)
+    );
+
+    peer_socket->SetCloseCallbacks(
+        MakeCallback(&Bgp::HandleClose, this),
+        MakeCallback(&Bgp::HandleClose, this)
+    );
+
     // TODO create socket
-    // TODO check/set peer metadata (fsm, socket, etc)
-    // TODO connect retry
+    
 
     NS_LOG_LOGIC("buliding FSM for peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
 
