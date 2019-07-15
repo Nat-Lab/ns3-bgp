@@ -144,9 +144,9 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
 
     NS_LOG_LOGIC("obtaning local address information for peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
 
-    Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer->peer_address);
+    Ipv4InterfaceAddress local_address = _routing->GetAddressByNexthop(peer->peer_address);
 
-    if (local_address == nullptr) {
+    if (local_address.GetLocal().Get() == 0) {
         NS_LOG_WARN("peer AS" << peer->peer_asn << " (" << peer->peer_address << ") unreachable on any device, skipping.");
         return false;
     }
@@ -155,7 +155,7 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
 
     Ptr<Socket> peer_socket = Socket::CreateSocket(GetNode(), TcpSocketFactory::GetTypeId());
 
-    if (peer_socket->Bind(InetSocketAddress(local_address->GetLocal(), 179)) == -1) {
+    if (peer_socket->Bind(InetSocketAddress(local_address.GetLocal(), 179)) == -1) {
         NS_LOG_ERROR("failed to bind.");
         return false;
     }
@@ -176,9 +176,9 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
 bool Bgp::CreateFsmForPeer(Ptr<Peer> peer) {
     NS_ASSERT(peer->_socket != nullptr);
 
-    Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer->peer_address);
+    Ipv4InterfaceAddress local_address = _routing->GetAddressByNexthop(peer->peer_address);
 
-    if (local_address == nullptr) {
+    if (local_address.GetLocal().Get() == 0) {
         NS_LOG_WARN("peer AS" << peer->peer_asn << " (" << peer->peer_address << ") unreachable on any device.");
         return false;
     }
@@ -199,11 +199,11 @@ bool Bgp::CreateFsmForPeer(Ptr<Peer> peer) {
     peer_config.in_filters = peer->ingress_rules;
     peer_config.out_filters = peer->egress_rules;
     peer_config.log_handler = PeekPointer(peer_logger);
-    peer_config.nexthop = htonl(local_address->GetLocal().Get());
+    peer_config.nexthop = htonl(local_address.GetLocal().Get());
     peer_config.out_handler = PeekPointer(peer_out_handler);
     peer_config.peer_asn = peer->peer_asn;
-    peer_config.peering_lan_length = local_address->GetMask().GetPrefixLength();
-    peer_config.peering_lan_prefix = htonl(local_address->GetLocal().CombineMask(local_address->GetMask()).Get());
+    peer_config.peering_lan_length = local_address.GetMask().GetPrefixLength();
+    peer_config.peering_lan_prefix = htonl(local_address.GetLocal().CombineMask(local_address.GetMask()).Get());
 
     Ptr<BgpNs3Fsm> peer_fsm = Create<BgpNs3Fsm>(peer_config);
     peer->_fsm = peer_fsm;
