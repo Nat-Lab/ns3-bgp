@@ -11,6 +11,8 @@ def build(bld):
         'model/bgp-routing.cc',
         'model/bgp-ns3-clock.cc',
         'model/bgp-ns3-fsm.cc',
+        'model/bgp-ns3-socket-in.cc',
+        'model/bgp-ns3-socket-out.cc',
         'model/bgp-log.cc',
         'helper/bgp-helper.cc',
         ]
@@ -27,6 +29,8 @@ def build(bld):
         'model/bgp-routing.h',
         'model/bgp-ns3-clock.h',
         'model/bgp-ns3-fsm.h',
+        'model/bgp-ns3-socket-in.h',
+        'model/bgp-ns3-socket-out.h',
         'model/bgp-log.h',
         'helper/bgp-helper.h',
         ]
