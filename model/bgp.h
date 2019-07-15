@@ -1,3 +1,13 @@
+/**
+ * @file bgp.h
+ * @author Nato Morichika <nat@nat.moe>
+ * @brief BGP module for ns3.
+ * @version 0.1
+ * @date 2019-07-15
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 #ifndef BGP_H
 #define BGP_H
 
