@@ -11,6 +11,7 @@
 #ifndef BGP_LOG_H
 #define BGP_LOG_H
 #include <libbgp/bgp-log-handler.h>
+#include "ns3/simple-ref-count.h"
 
 namespace ns3 {
 
