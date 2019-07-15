@@ -12,9 +12,17 @@ NS_LOG_COMPONENT_DEFINE("Bgp");
 NS_OBJECT_ENSURE_REGISTERED(Bgp);
 
 void Peer::Reset() {
-    _fsm->resetHard();
-    _socket->SetRecvCallback(MakeNullCallback<void, Ptr<Socket>>());
-    _socket->Close();
+    if (_fsm != nullptr) _fsm->resetHard();
+
+    if (_socket != nullptr) {
+        _socket->Close();
+        _socket->SetRecvCallback(MakeNullCallback<void, Ptr<Socket>>());
+        _socket->SetCloseCallbacks(
+            MakeNullCallback<void, Ptr<Socket>>(),
+            MakeNullCallback<void, Ptr<Socket>>()
+        );
+    }
+
     _fsm = nullptr;
     _socket = nullptr;
 }
@@ -124,6 +132,36 @@ void Bgp::StartApplication(void) {
     Simulator::Schedule(_clock_interval, MakeEvent(&Bgp::Tick, this));
 }
 
+void Bgp::StopApplication(void) {
+    if (!_running) return;
+    
+    _running = false;
+
+    NS_LOG_LOGIC("closing listening socket...");
+
+    _listen_socket->Close();
+    _listen_socket->SetAcceptCallback(
+        MakeNullCallback<bool, Ptr<Socket>, const Address &> (),
+        MakeNullCallback<void, Ptr<Socket>, const Address &> ()
+    );
+
+    NS_LOG_LOGIC("recovering old routing protocol...");
+
+    Ptr<Ipv4> ipv4 = GetNode()->GetObject<Ipv4>();
+    ipv4->SetRoutingProtocol(_old_protocol);
+
+    NS_LOG_LOGIC("de-peering...");
+
+    for (Ptr<Peer> peer : _peers) {
+        if (peer->_fsm != nullptr) {
+            peer->_fsm->stop();
+        }
+        peer->Reset();
+    }
+
+    NS_LOG_LOGIC("stopped.");
+}
+
 void Bgp::Tick() {
     // TODO connect retry
 
@@ -165,11 +203,6 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
     peer_socket->SetConnectCallback(
         MakeCallback(&Bgp::HandleConnectOut, this),
         MakeCallback(&Bgp::HandleConnectOutFailed, this)
-    );
-
-    peer_socket->SetCloseCallbacks(
-        MakeCallback(&Bgp::HandleClose, this),
-        MakeCallback(&Bgp::HandleClose, this)
     );
 
     return true;
