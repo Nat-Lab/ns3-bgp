@@ -86,7 +86,6 @@ private:
 
     Ptr<BgpRouting> _routing;
     Ptr<Socket> _listen_socket;
-    Ptr<Ipv4RoutingProtocol> _old_protocol;
 
     std::vector<Ptr<Peer>> _peers;
     std::vector<Ptr<Session>> _sessions;

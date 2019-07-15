@@ -13,20 +13,18 @@ NS_LOG_COMPONENT_DEFINE("Bgp");
 NS_OBJECT_ENSURE_REGISTERED(Bgp);
 
 void Session::Drop() {
-    out_handler->setStateChangeCallback(MakeNullCallback<void, Ptr<Socket>, int, int>());
-    if (fsm != nullptr) {
-        fsm->stop();
-        fsm->resetHard();
-    }
+    socket->SetRecvCallback(MakeNullCallback<void, Ptr<Socket>>());
+    socket->SetCloseCallbacks(
+        MakeNullCallback<void, Ptr<Socket>>(),
+        MakeNullCallback<void, Ptr<Socket>>()
+    );
+    socket->Close();
+    socket = nullptr;
 
-    if (socket != nullptr) {
-        socket->SetRecvCallback(MakeNullCallback<void, Ptr<Socket>>());
-        socket->SetCloseCallbacks(
-            MakeNullCallback<void, Ptr<Socket>>(),
-            MakeNullCallback<void, Ptr<Socket>>()
-        );
-        socket->Close();
-    }
+    //out_handler->setStateChangeCallback(MakeNullCallback<void, Ptr<Socket>, int, int>());
+    //fsm->stop();
+    fsm->resetHard();
+    
 }
 
 TypeId Bgp::GetTypeId (void) {
@@ -68,7 +66,6 @@ Bgp::Bgp() : _logger("(init)"), _rib(&_logger) {
 
     _running = false;
     _listen_socket = nullptr;
-    _old_protocol = nullptr;
 }
 
 void Bgp::StartApplication(void) {
@@ -89,12 +86,10 @@ void Bgp::StartApplication(void) {
     _template.use_4b_asn = true;
 
     Ptr<Ipv4> ipv4 = GetNode()->GetObject<Ipv4>();
-    _old_protocol = ipv4->GetRoutingProtocol();
 
     NS_LOG_LOGIC("installing BgpRouting...");
 
     Ptr<Ipv4ListRouting> list_routing = CreateObject<Ipv4ListRouting>();
-    //list_routing->AddRoutingProtocol(_old_protocol, 10);
     list_routing->AddRoutingProtocol(CreateObject<Ipv4StaticRouting>(), 10);
     list_routing->AddRoutingProtocol(_routing, 5);
     ipv4->SetRoutingProtocol(list_routing);
@@ -149,14 +144,12 @@ void Bgp::StopApplication(void) {
         MakeNullCallback<void, Ptr<Socket>, const Address &> ()
     );
 
-    NS_LOG_LOGIC("recovering old routing protocol...");
-
-    Ptr<Ipv4> ipv4 = GetNode()->GetObject<Ipv4>();
-    ipv4->SetRoutingProtocol(_old_protocol);
-
     NS_LOG_LOGIC("de-peering...");
 
-    // TODO
+    for (std::vector<Ptr<Session>>::iterator s = _sessions.begin(); s != _sessions.end();) {
+        (*s)->Drop();
+        _sessions.erase(s);
+    }
 
     NS_LOG_LOGIC("stopped.");
 }
@@ -164,9 +157,8 @@ void Bgp::StopApplication(void) {
 void Bgp::Tick() {
     // TODO connect retry
 
-
     for (Ptr<Session> session : _sessions) {
-        if (session->fsm != nullptr) session->fsm->tick();
+        session->fsm->tick();
     }
 
     if (_running) Simulator::Schedule(_clock_interval, MakeEvent(&Bgp::Tick, this));
@@ -238,6 +230,7 @@ void Bgp::HandleClose(Ptr<Socket> socket) {
 }
 
 void Bgp::HandleConnectIn(Ptr<Socket> socket, const Address &peer_addr) {
+    NS_LOG_LOGIC("incoming connection.");
     SessionInit(false, socket);
 }
 
@@ -275,6 +268,14 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
         NS_LOG_WARN("socket peer address " << peer_sockaddr.GetIpv4() << "does not belong to any peer.");
         socket->Close();
         return false;
+    }
+
+    for (const Ptr<Session> session : _sessions) {
+        if (session->peer == peer) {
+            NS_LOG_INFO("session or fsm for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist, closing socket.");
+            socket->Close();
+            return false;
+        }
     }
     
     Ipv4InterfaceAddress local_addr = _routing->GetAddressByNexthop(peer_sockaddr.GetIpv4());
