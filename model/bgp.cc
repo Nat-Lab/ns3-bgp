@@ -312,7 +312,7 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
 
     Ptr<BgpNs3Fsm> peer_fsm = Create<BgpNs3Fsm>(peer_config);
     Ptr<Session> peer_session = Create<Session>();
-    Ptr<BgpNs3SocketIn> in_handler = Create<BgpNs3SocketIn>(peer_session);
+    Ptr<BgpNs3SocketIn> in_handler = Create<BgpNs3SocketIn>(peer_fsm);
     peer_session->peer = peer;
     peer_session->socket = socket;
     peer_session->fsm = peer_fsm;
@@ -340,8 +340,7 @@ void Bgp::HandleStateChange(Ptr<Socket> socket, int old_state, int new_state) {
 }
 
 void Bgp::AddPeer(const Peer &peer) {
-    Ptr<Peer> peer_ptr = Create<Peer>(peer);
-    _peers.push_back(peer_ptr);
+    _peers.push_back(Create<Peer>(peer));
 }
 
 void Bgp::AddRoute(libbgp::Route route, uint32_t nexthop) {

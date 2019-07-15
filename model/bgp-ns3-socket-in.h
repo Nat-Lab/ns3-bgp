@@ -11,11 +11,11 @@ class Session;
 
 class BgpNs3SocketIn : public SimpleRefCount<BgpNs3SocketIn> {
 public:
-    BgpNs3SocketIn(Ptr<Session> session);
+    BgpNs3SocketIn(Ptr<BgpNs3Fsm> fsm);
     void HandleRead(Ptr<Socket> socket);
 
 private:
-    Ptr<Session> _session;
+    Ptr<BgpNs3Fsm> _fsm;
     uint8_t _recv_buffer[65535];
 };
 
