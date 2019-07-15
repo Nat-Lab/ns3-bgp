@@ -59,7 +59,7 @@ private:
     void Tick();
 
     bool ConnectPeer(Peer &peer);
-    void CreateFsmForPeer(Peer &peer);
+    bool CreateFsmForPeer(Peer &peer);
 
     void HandleAccept(Ptr<Socket> socket, const Address &src);
     bool HandleRequest(Ptr<Socket> socket, const Address &src);

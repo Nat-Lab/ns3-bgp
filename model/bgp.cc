@@ -165,14 +165,14 @@ bool Bgp::ConnectPeer(Peer &peer) {
     );    
 }
 
-void Bgp::CreateFsmForPeer(Peer &peer) {
+bool Bgp::CreateFsmForPeer(Peer &peer) {
     NS_ASSERT(peer._socket != nullptr);
 
     Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer.peer_address);
 
     if (local_address == nullptr) {
         NS_LOG_WARN("peer AS" << peer.peer_asn << " (" << peer.peer_address << ") unreachable on any device.");
-        return;
+        return false;
     }
 
     NS_LOG_LOGIC("buliding FSM for peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
@@ -196,6 +196,54 @@ void Bgp::CreateFsmForPeer(Peer &peer) {
     peer_config.peer_asn = peer.peer_asn;
     peer_config.peering_lan_length = local_address->GetMask().GetPrefixLength();
     peer_config.peering_lan_prefix = htonl(local_address->GetLocal().CombineMask(local_address->GetMask()).Get());
+
+    Ptr<BgpNs3Fsm> peer_fsm = Create<BgpNs3Fsm>(peer_config);
+    peer._fsm = peer_fsm;
+    _fsms.push_back(peer_fsm);
+
+    return true;
+}
+
+void Bgp::HandleConnect(Ptr<Socket> socket) {
+    NS_LOG_LOGIC("handling incoming connection: " << socket);
+
+    Address peer;
+
+    if (socket->GetPeerName(peer) == -1) {
+        NS_LOG_WARN("failed to get peer information.");
+        socket->Close();
+    }
+
+    Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer);
+    
+    for (Peer &peer : _peers) {
+        if (peer.peer_address == peer_ipv4) {
+            peer._socket = socket;
+
+            NS_ASSERT(peer._fsm == nullptr);
+
+            if (!CreateFsmForPeer(peer)) {
+                NS_LOG_WARN("failed to create FSM for peer peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
+                socket->Close();
+                peer._socket = nullptr;
+                return;
+            }
+
+            NS_LOG_LOGIC("invoking start on FSM for peer peer AS" << peer.peer_asn << " (" << peer.peer_address << ").");
+            NS_ASSERT(peer._fsm != nullptr);
+
+            if (peer._fsm->start() == 0) {
+                NS_LOG_WARN("failed to start FSM.");
+                socket->Close();
+                peer._fsm = nullptr;
+                peer._socket = nullptr;
+            }
+
+            return;
+        }
+    }
+
+    NS_LOG_WARN("no matching peer found for souce address " << peer_ipv4);
 }
 
 void Bgp::AddPeer(const Peer &peer) {
