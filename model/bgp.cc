@@ -166,6 +166,8 @@ bool Bgp::ConnectPeer(Peer &peer) {
 }
 
 void Bgp::CreateFsmForPeer(Peer &peer) {
+    NS_ASSERT(peer._socket != nullptr);
+
     Ptr<Ipv4InterfaceAddress> local_address = _routing->GetAddressByNexthop(peer.peer_address);
 
     if (local_address == nullptr) {
@@ -178,13 +180,19 @@ void Bgp::CreateFsmForPeer(Peer &peer) {
     char peer_name[128];
     snprintf(peer_name, 128, "AS%d", peer.peer_asn);
     libbgp::BgpConfig peer_config(_template);
+
     Ptr<BgpLog> peer_logger = Create<BgpLog>(peer_name);
+    Ptr<BgpNs3SocketOut> peer_out_handler = Create<BgpNs3SocketOut>(peer._socket);
+
+    peer._logger = peer_logger;
+    peer._out_handler = peer_out_handler;
+
     peer_config.asn = peer.local_asn;
     peer_config.in_filters = peer.ingress_rules;
     peer_config.out_filters = peer.egress_rules;
     peer_config.log_handler = PeekPointer(peer_logger);
     peer_config.nexthop = htonl(local_address->GetLocal().Get());
-    peer_config.out_handler = NULL; // TODO
+    peer_config.out_handler = PeekPointer(peer_out_handler);
     peer_config.peer_asn = peer.peer_asn;
     peer_config.peering_lan_length = local_address->GetMask().GetPrefixLength();
     peer_config.peering_lan_prefix = htonl(local_address->GetLocal().CombineMask(local_address->GetMask()).Get());

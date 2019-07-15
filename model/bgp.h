@@ -4,6 +4,7 @@
 #include <vector>
 #include "bgp-ns3-fsm.h"
 #include "bgp-ns3-clock.h"
+#include "bgp-ns3-socket-out.h"
 #include "bgp-log.h"
 #include "bgp-routing.h"
 #include "ns3/application.h"
@@ -30,6 +31,7 @@ private:
     Ptr<BgpNs3Fsm> _fsm;
     Ptr<Socket> _socket;
     Ptr<BgpLog> _logger;
+    Ptr<BgpNs3SocketOut> _out_handler;
 };
 
 class Bgp : public Application {
