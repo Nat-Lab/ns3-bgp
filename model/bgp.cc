@@ -12,20 +12,21 @@ namespace ns3 {
 NS_LOG_COMPONENT_DEFINE("Bgp");
 NS_OBJECT_ENSURE_REGISTERED(Bgp);
 
-void Peer::Reset() {
-    if (_fsm != nullptr) _fsm->resetHard();
+void Session::Drop() {
+    out_handler->setStateChangeCallback(MakeNullCallback<void, Ptr<Socket>, int, int>());
+    if (fsm != nullptr) {
+        fsm->stop();
+        fsm->resetHard();
+    }
 
-    if (_socket != nullptr) {
-        _socket->Close();
-        _socket->SetRecvCallback(MakeNullCallback<void, Ptr<Socket>>());
-        _socket->SetCloseCallbacks(
+    if (socket != nullptr) {
+        socket->SetRecvCallback(MakeNullCallback<void, Ptr<Socket>>());
+        socket->SetCloseCallbacks(
             MakeNullCallback<void, Ptr<Socket>>(),
             MakeNullCallback<void, Ptr<Socket>>()
         );
+        socket->Close();
     }
-
-    _fsm = nullptr;
-    _socket = nullptr;
 }
 
 TypeId Bgp::GetTypeId (void) {
@@ -125,7 +126,8 @@ void Bgp::StartApplication(void) {
             continue;
         }
 
-        ConnectPeer(peer);        
+        // allow other events to run too.
+        Simulator::ScheduleNow(MakeEvent(&Bgp::ConnectPeer, this, peer));   
     }
 
     NS_LOG_LOGIC("init complete.");
@@ -154,12 +156,7 @@ void Bgp::StopApplication(void) {
 
     NS_LOG_LOGIC("de-peering...");
 
-    for (Ptr<Peer> peer : _peers) {
-        if (peer->_fsm != nullptr) {
-            peer->_fsm->stop();
-        }
-        peer->Reset();
-    }
+    // TODO
 
     NS_LOG_LOGIC("stopped.");
 }
@@ -167,8 +164,9 @@ void Bgp::StopApplication(void) {
 void Bgp::Tick() {
     // TODO connect retry
 
-    for (Ptr<Peer> peer : _peers) {
-        if (peer->_fsm != nullptr) peer->_fsm->tick();
+
+    for (Ptr<Session> session : _sessions) {
+        if (session->fsm != nullptr) session->fsm->tick();
     }
 
     if (_running) Simulator::Schedule(_clock_interval, MakeEvent(&Bgp::Tick, this));
@@ -176,9 +174,11 @@ void Bgp::Tick() {
 }
 
 bool Bgp::ConnectPeer(Ptr<Peer> peer) {
-    if (peer->_fsm != nullptr || peer->_socket != nullptr) {
-        NS_LOG_LOGIC("socket or fsm for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist, skipping.");
-        return false;
+    for (const Ptr<Session> session : _sessions) {
+        if (session->peer == peer) {
+            NS_LOG_INFO("session or fsm for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist, skipping.");
+            return false;
+        }
     }
 
     NS_LOG_LOGIC("obtaning local address information for peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
@@ -196,10 +196,7 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
 
     NS_LOG_LOGIC("using local address: " << local_address);
 
-    /* if (peer_socket->Bind(InetSocketAddress(Ipv4Address::GetAny(), 179)) == -1) {
-        NS_LOG_ERROR("failed to bind.");
-        return false;
-    }*/
+    peer->_local_addr = local_address;
 
     NS_LOG_LOGIC("registering callbacks...");
 
@@ -208,48 +205,12 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
         MakeCallback(&Bgp::HandleConnectOutFailed, this)
     );
 
+    // TODO: set TTL
+
     if (peer_socket->Connect(InetSocketAddress(peer->peer_address, 179)) == -1) {
         NS_LOG_ERROR("failed to connect: " << strerror(errno));
         return false;
     }
-
-    return true;
-}
-
-bool Bgp::CreateFsmForPeer(Ptr<Peer> peer) {
-    NS_ASSERT(peer->_socket != nullptr);
-
-    Ipv4InterfaceAddress local_address = _routing->GetAddressByNexthop(peer->peer_address);
-
-    if (local_address.GetLocal().Get() == 0) {
-        NS_LOG_WARN("peer AS" << peer->peer_asn << " (" << peer->peer_address << ") unreachable on any device.");
-        return false;
-    }
-
-    NS_LOG_LOGIC("buliding FSM for peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
-
-    char peer_name[128];
-    snprintf(peer_name, 128, "AS%d", peer->peer_asn);
-    libbgp::BgpConfig peer_config(_template);
-
-    Ptr<BgpLog> peer_logger = Create<BgpLog>(peer_name);
-    Ptr<BgpNs3SocketOut> peer_out_handler = Create<BgpNs3SocketOut>(peer->_socket);
-
-    peer->_logger = peer_logger;
-    peer->_out_handler = peer_out_handler;
-
-    peer_config.asn = peer->local_asn;
-    peer_config.in_filters = peer->ingress_rules;
-    peer_config.out_filters = peer->egress_rules;
-    peer_config.log_handler = PeekPointer(peer_logger);
-    peer_config.nexthop = htonl(local_address.GetLocal().Get());
-    peer_config.out_handler = PeekPointer(peer_out_handler);
-    peer_config.peer_asn = peer->peer_asn;
-    peer_config.peering_lan_length = local_address.GetMask().GetPrefixLength();
-    peer_config.peering_lan_prefix = htonl(local_address.GetLocal().CombineMask(local_address.GetMask()).Get());
-
-    Ptr<BgpNs3Fsm> peer_fsm = Create<BgpNs3Fsm>(peer_config);
-    peer->_fsm = peer_fsm;
 
     return true;
 }
@@ -265,97 +226,116 @@ void Bgp::HandleConnectOutFailed(Ptr<Socket> socket) {
 void Bgp::HandleClose(Ptr<Socket> socket) {
     NS_LOG_LOGIC("handleing connection shutdown: " << socket);
 
-    for (Ptr<Peer> peer : _peers) {
-        if (peer->_socket == socket) {
-            NS_LOG_INFO("resetting peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
-            peer->Reset();
+    for (std::vector<Ptr<Session>>::iterator session = _sessions.begin();
+         session != _sessions.end(); session++) {
+        if ((*session)->socket == socket) {
+            NS_LOG_INFO("dropping session of AS" << (*session)->peer->peer_asn << " (" << (*session)->peer->peer_address << ").");
+            (*session)->Drop();
+            _sessions.erase(session);
             return;
         }
     }
 }
 
-bool Bgp::SetupPeer(Ptr<Peer> peer, Ptr<Socket> socket) {
-    NS_LOG_LOGIC("setup peering for AS" << peer->peer_asn << " (" << peer->peer_address << ").");
+void Bgp::HandleConnectIn(Ptr<Socket> socket, const Address &peer_addr) {
+    SessionInit(false, socket);
+}
 
-    if (peer->_fsm != nullptr && peer->_socket != nullptr) {
-        NS_LOG_INFO("found ongoing peering for AS" << peer->peer_asn << " (" << peer->peer_address << ").");
+void Bgp::HandleConnectOut(Ptr<Socket> socket) {
+    NS_LOG_LOGIC("connected. unregister connect callback...");
+    socket->SetConnectCallback(
+        MakeNullCallback<void, Ptr<Socket>>(),
+        MakeNullCallback<void, Ptr<Socket>>()
+    );
+    SessionInit(true, socket);
+}
 
-        if (peer->_fsm->getState() == libbgp::ESTABLISHED && peer->peer_asn > peer->local_asn) {
-            NS_LOG_INFO("keeping old connection.");
-            socket->Close();
-            return false;
-        } else {
-            NS_ASSERT(peer->_socket != socket);
-            Ptr<Socket> old_socket = peer->_socket;
-            peer->_socket = socket;
-            old_socket->Close();
-            NS_LOG_INFO("replaced old socket (" << old_socket << ") with new (" << socket << ")");
+bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
+    Address peer_addr;
+    
+    if (socket->GetPeerName(peer_addr) == -1) {
+        NS_LOG_WARN("failed to get peer information.");
+        socket->Close();
+        return false;
+    }
+    
+    InetSocketAddress peer_sockaddr = InetSocketAddress::ConvertFrom(peer_addr);
+    Ptr<Peer> peer = nullptr;
+
+    NS_LOG_LOGIC("prepareing session with " << peer_sockaddr.GetIpv4() << "...");
+
+    for (Ptr<Peer> _peer : _peers) {
+        if (_peer->peer_address == peer_sockaddr.GetIpv4()) {
+            peer = _peer;
+            break;
         }
-        
     }
 
-    peer->_socket = socket;
-
-    if (!CreateFsmForPeer(peer)) {
-        NS_LOG_WARN("failed to create FSM for peer AS" << peer->peer_asn << " (" << peer->peer_address << "), dropping connection.");
+    if (peer == nullptr) {
+        NS_LOG_WARN("socket peer address " << peer_sockaddr.GetIpv4() << "does not belong to any peer.");
         socket->Close();
-        peer->_socket = nullptr;
+        return false;
+    }
+    
+    Ipv4InterfaceAddress local_addr = _routing->GetAddressByNexthop(peer_sockaddr.GetIpv4());
+    peer->_local_addr = local_addr;
+
+    if (local_addr.GetLocal().Get() == 0) {
+        NS_LOG_WARN("peer AS" << peer->peer_asn << " (" << peer->peer_address << ") unreachable on any device.");
+        socket->Close();
         return false;
     }
 
-    Ptr<BgpNs3SocketIn> in_handler = Create<BgpNs3SocketIn>(peer);
-    peer->_in_handler = in_handler;
+    NS_LOG_LOGIC("matching peer found. (AS" << peer->peer_asn << ", " <<  peer->peer_address << ").");
 
+    char peer_name[128];
+    snprintf(peer_name, 128, "AS%d", peer->peer_asn);
+    libbgp::BgpConfig peer_config(_template);
+
+    Ptr<BgpLog> peer_logger = Create<BgpLog>(peer_name);
+    Ptr<BgpNs3SocketOut> peer_out_handler = Create<BgpNs3SocketOut>(socket, MakeCallback(&Bgp::HandleStateChange, this));
+
+    peer_logger->setLogLevel(_log_level);
+
+    peer_config.asn = peer->local_asn;
+    peer_config.in_filters = peer->ingress_rules;
+    peer_config.out_filters = peer->egress_rules;
+    peer_config.log_handler = PeekPointer(peer_logger);
+    peer_config.nexthop = htonl(local_addr.GetLocal().Get());
+    peer_config.out_handler = PeekPointer(peer_out_handler);
+    peer_config.peer_asn = peer->peer_asn;
+    peer_config.peering_lan_length = local_addr.GetMask().GetPrefixLength();
+    peer_config.peering_lan_prefix = htonl(local_addr.GetLocal().CombineMask(local_addr.GetMask()).Get());
+
+    // TODO: clean BgpNs3SocketIn to take only fsm.
+
+    Ptr<BgpNs3Fsm> peer_fsm = Create<BgpNs3Fsm>(peer_config);
+    Ptr<Session> peer_session = Create<Session>();
+    Ptr<BgpNs3SocketIn> in_handler = Create<BgpNs3SocketIn>(peer_session);
+    peer_session->peer = peer;
+    peer_session->socket = socket;
+    peer_session->fsm = peer_fsm;
+    peer_session->logger = peer_logger;
+    peer_session->out_handler = peer_out_handler;
+    peer_session->in_handler = in_handler;
+    
     socket->SetRecvCallback(MakeCallback(&BgpNs3SocketIn::HandleRead, in_handler));
     socket->SetCloseCallbacks(
         MakeCallback(&Bgp::HandleClose, this),
         MakeCallback(&Bgp::HandleClose, this)
     );
+
+    if (local_init) peer_fsm->start();
+
+    _sessions.push_back(peer_session);
+
     return true;
 }
 
-void Bgp::HandleConnectIn(Ptr<Socket> socket, const Address &peer_addr) {
-    InetSocketAddress peer_sockaddr = InetSocketAddress::ConvertFrom(peer_addr);
-
-    NS_LOG_LOGIC("handling incoming connection from: " << peer_sockaddr.GetIpv4());
-    
-    for (Ptr<Peer> peer : _peers) {
-        if (peer->peer_address == peer_sockaddr.GetIpv4()) {
-            SetupPeer(peer, socket);
-            NS_ASSERT(peer->_fsm != nullptr);
-            return;
-        }
-    }
-
-    socket->Close();
-    NS_LOG_WARN("no matching peer found for souce address " << peer_sockaddr.GetIpv4());
-}
-
-void Bgp::HandleConnectOut(Ptr<Socket> socket) {
-    Address peer_addr;
-
-    if (socket->GetPeerName(peer_addr) == -1) {
-        NS_LOG_WARN("failed to get peer information.");
+void Bgp::HandleStateChange(Ptr<Socket> socket, int old_state, int new_state) {
+    if (new_state == libbgp::IDLE || new_state == libbgp::BROKEN) {
         socket->Close();
     }
-
-    InetSocketAddress peer_sockaddr = InetSocketAddress::ConvertFrom(peer_addr);
-
-    NS_LOG_LOGIC("connecting to " << peer_sockaddr.GetIpv4() << "...");
-
-    for (Ptr<Peer> peer : _peers) {
-        if (peer->peer_address == peer_sockaddr.GetIpv4()) {
-            if (SetupPeer(peer, socket)) {
-                NS_ASSERT(peer->_fsm != nullptr);
-                NS_LOG_LOGIC("invoking start on FSM for peer AS" << peer->peer_asn << " (" << peer->peer_address << ").");
-                peer->_fsm->start();
-            }
-            return;
-        }
-    }
-
-    socket->Close();
-    NS_FATAL_ERROR("connect-out called but no matching peer found.");
 }
 
 void Bgp::AddPeer(const Peer &peer) {

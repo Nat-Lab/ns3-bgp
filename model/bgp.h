@@ -28,15 +28,19 @@ public:
 
 private:
     friend Bgp;
-    friend BgpNs3SocketIn;
+    Ipv4InterfaceAddress _local_addr;
+};
 
-    Ptr<BgpNs3Fsm> _fsm;
-    Ptr<Socket> _socket;
-    Ptr<BgpLog> _logger;
-    Ptr<BgpNs3SocketOut> _out_handler;
-    Ptr<BgpNs3SocketIn> _in_handler;
+class Session : public SimpleRefCount<Session> {
+public:
+    Ptr<Peer> peer;
+    Ptr<BgpNs3Fsm> fsm;
+    Ptr<Socket> socket;
+    Ptr<BgpLog> logger;
+    Ptr<BgpNs3SocketOut> out_handler;
+    Ptr<BgpNs3SocketIn> in_handler;
 
-    void Reset();
+    void Drop();
 };
 
 class Bgp : public Application {
@@ -64,14 +68,14 @@ private:
     void Tick();
 
     bool ConnectPeer(Ptr<Peer> peer);
-    bool CreateFsmForPeer(Ptr<Peer> peer);
-    bool SetupPeer(Ptr<Peer> peer, Ptr<Socket> socket);
+    bool SessionInit(bool local_init, Ptr<Socket> socket);
 
     void HandleConnectIn(Ptr<Socket> socket, const Address &src);
     bool HandleConnectInRequest(Ptr<Socket> socket, const Address &src);
     void HandleConnectOut(Ptr<Socket> socket);
     void HandleConnectOutFailed(Ptr<Socket> socket);
     void HandleClose(Ptr<Socket> socket);
+    void HandleStateChange(Ptr<Socket> socket, int old_state, int new_state);
 
     Time _hold_timer;
     Time _clock_interval;
@@ -85,6 +89,7 @@ private:
     Ptr<Ipv4RoutingProtocol> _old_protocol;
 
     std::vector<Ptr<Peer>> _peers;
+    std::vector<Ptr<Session>> _sessions;
 
     libbgp::BgpConfig _template;
     libbgp::BgpRib _rib;

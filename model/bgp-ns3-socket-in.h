@@ -7,15 +7,15 @@
 
 namespace ns3 {
 
-class Peer;
+class Session;
 
 class BgpNs3SocketIn : public SimpleRefCount<BgpNs3SocketIn> {
 public:
-    BgpNs3SocketIn(Ptr<Peer> peer);
+    BgpNs3SocketIn(Ptr<Session> session);
     void HandleRead(Ptr<Socket> socket);
 
 private:
-    Ptr<Peer> _peer;
+    Ptr<Session> _session;
     uint8_t _recv_buffer[65535];
 };
 

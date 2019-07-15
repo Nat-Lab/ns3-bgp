@@ -10,12 +10,13 @@ namespace ns3 {
 
 class BgpNs3SocketOut : public libbgp::BgpOutHandler, public SimpleRefCount<BgpNs3SocketOut> {
 public:
-    BgpNs3SocketOut(Ptr<Socket> socket, Callback<void, int, int> state_change_cb);
+    BgpNs3SocketOut(Ptr<Socket> socket, Callback<void, Ptr<Socket>, int, int> state_change_cb);
     bool handleOut(const uint8_t *buffer, size_t length);
     void notifyStateChange(int old_state, int new_state);
+    void setStateChangeCallback(Callback<void, Ptr<Socket>, int, int> state_change_cb);
 private:
     Ptr<Socket> _socket;
-    Callback<void, int, int> _state_change_cb;
+    Callback<void, Ptr<Socket>, int, int> _state_change_cb;
 };
 
 }
