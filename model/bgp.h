@@ -66,10 +66,10 @@ private:
     bool ConnectPeer(Ptr<Peer> peer);
     bool CreateFsmForPeer(Ptr<Peer> peer);
 
-    void HandleAccept(Ptr<Socket> socket, const Address &src);
-    bool HandleConnectRequest(Ptr<Socket> socket, const Address &src);
-    void HandleConnect(Ptr<Socket> socket);
-    void HandleConnectFailed(Ptr<Socket> socket);
+    void HandleConnectIn(Ptr<Socket> socket, const Address &src);
+    bool HandleConnectInRequest(Ptr<Socket> socket, const Address &src);
+    void HandleConnectOut(Ptr<Socket> socket);
+    void HandleConnectOutFailed(Ptr<Socket> socket);
     void HandleClose(Ptr<Socket> socket);
 
     Time _hold_timer;

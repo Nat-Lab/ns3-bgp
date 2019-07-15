@@ -103,8 +103,8 @@ void Bgp::StartApplication(void) {
     NS_LOG_LOGIC("registering callbacks...");
 
     _listen_socket->SetAcceptCallback(
-        MakeCallback(&Bgp::HandleConnectRequest, this),
-        MakeCallback(&Bgp::HandleAccept, this)
+        MakeCallback(&Bgp::HandleConnectInRequest, this),
+        MakeCallback(&Bgp::HandleConnectIn, this)
     );
     
     NS_LOG_LOGIC("sending OPEN message to peers...");
@@ -163,8 +163,8 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
     NS_LOG_LOGIC("registering callbacks...");
 
     peer_socket->SetConnectCallback(
-        MakeCallback(&Bgp::HandleConnect, this),
-        MakeCallback(&Bgp::HandleConnectFailed, this)
+        MakeCallback(&Bgp::HandleConnectOut, this),
+        MakeCallback(&Bgp::HandleConnectOutFailed, this)
     );
 
     peer_socket->SetCloseCallbacks(
@@ -213,11 +213,11 @@ bool Bgp::CreateFsmForPeer(Ptr<Peer> peer) {
     return true;
 }
 
-bool Bgp::HandleConnectRequest(Ptr<Socket> socket, const Address &src) {
+bool Bgp::HandleConnectInRequest(Ptr<Socket> socket, const Address &src) {
     return true;
 }
 
-void Bgp::HandleConnectFailed(Ptr<Socket> socket) {
+void Bgp::HandleConnectOutFailed(Ptr<Socket> socket) {
     NS_LOG_WARN("socket connect failed: " << socket);
 }
 
@@ -244,7 +244,7 @@ void Bgp::HandleClose(Ptr<Socket> socket) {
     NS_FATAL_ERROR("close handler called without matching peer.");
 }
 
-void Bgp::HandleAccept(Ptr<Socket> socket, const Address &peer) {
+void Bgp::HandleConnectIn(Ptr<Socket> socket, const Address &peer) {
     NS_LOG_LOGIC("handling incoming connection: " << socket);
 
     Ipv4Address peer_ipv4 = Ipv4Address::ConvertFrom(peer);
