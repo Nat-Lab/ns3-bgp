@@ -15,12 +15,9 @@ void BgpNs3SocketIn::HandleRead(Ptr<Socket> socket) {
     if (sz < 0) {
         NS_LOG_ERROR("error reading from socket " << socket << " for peer peer AS" << 
                      _peer->peer_asn << " (" << _peer->peer_address << ").");
-        _peer->_fsm->resetHard();
 
         socket->Close();
-        _peer->_socket->Close();
-        _peer->_fsm = nullptr;
-        _peer->_socket = nullptr;
+        _peer->Reset();
 
         return;
     }
@@ -32,9 +29,7 @@ void BgpNs3SocketIn::HandleRead(Ptr<Socket> socket) {
                      _peer->peer_address << ") returned error.");
 
         socket->Close();
-        _peer->_socket->Close();
-        _peer->_fsm = nullptr;
-        _peer->_socket = nullptr;
+        _peer->Reset();
 
         return;
     }
