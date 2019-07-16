@@ -54,6 +54,8 @@ public:
     Ptr<BgpNs3SocketOut> out_handler;
     Ptr<BgpNs3SocketIn> in_handler;
 
+    bool local_init;
+
     void Drop();
 };
 

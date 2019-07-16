@@ -230,7 +230,7 @@ void Bgp::HandleClose(Ptr<Socket> socket) {
     for (std::vector<Ptr<Session>>::iterator session = _sessions.begin();
          session != _sessions.end(); session++) {
         if ((*session)->socket == socket) {
-            NS_LOG_INFO("dropping session of AS" << (*session)->peer->peer_asn << " (" << (*session)->peer->peer_address << ").");
+            NS_LOG_INFO("dropping session of AS" << (*session)->peer->peer_asn << "/" << ((*session)->local_init ? 'L' : 'R') << " (" << (*session)->peer->peer_address << ").");
             (*session)->Drop();
             _sessions.erase(session);
             return;
@@ -325,6 +325,7 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
     peer_session->logger = peer_logger;
     peer_session->out_handler = peer_out_handler;
     peer_session->in_handler = in_handler;
+    peer_session->local_init = local_init;
     
     socket->SetRecvCallback(MakeCallback(&BgpNs3SocketIn::HandleRead, in_handler));
     socket->SetCloseCallbacks(
