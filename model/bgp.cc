@@ -274,7 +274,7 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
     }
 
     if (peer == nullptr) {
-        NS_LOG_WARN("socket peer address " << peer_sockaddr.GetIpv4() << "does not belong to any peer.");
+        NS_LOG_WARN("socket peer address " << peer_sockaddr.GetIpv4() << " does not belong to any peer.");
         socket->Close();
         return false;
     }
