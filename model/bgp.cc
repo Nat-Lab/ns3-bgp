@@ -431,5 +431,11 @@ void Bgp::SetClockInterval(Time interval) {
     _clock_interval = interval;
 }
 
+/**
+ * @example bgp-example.cc
+ * A simple BGP setup example with two nodes peering with each other.
+ * 
+ */
+
 }
 
