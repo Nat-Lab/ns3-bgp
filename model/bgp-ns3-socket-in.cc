@@ -13,8 +13,6 @@
 
 namespace ns3 {
 
-NS_LOG_COMPONENT_DEFINE("BgpNs3SocketIn");
-
 /**
  * @brief Construct the container.
  * 
