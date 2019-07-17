@@ -51,7 +51,9 @@ int main () {
     // add the peer config to app1.
     bgp_app_1->AddPeer(bgp_app_1_peer);
 
-    // install app1 on node0
+    // install app1 on node0. When BGP is installed on a node, node's routing
+    // protocol will be replace by a Ipv4ListRouting that contains BgpRouting
+    // and Ipv4StaticRouting.
     n.Get(0)->AddApplication(bgp_app_1);
 
     Ptr<Bgp> bgp_app_2 = CreateObject<Bgp>();
@@ -70,7 +72,9 @@ int main () {
     // add the peer config to app1.
     bgp_app_2->AddPeer(bgp_app_2_peer);
 
-    // install app2 on node1
+    // install app2 on node1, When BGP is installed on a node, node's routing
+    // protocol will be replace by a Ipv4ListRouting that contains BgpRouting
+    // and Ipv4StaticRouting.
     n.Get(1)->AddApplication(bgp_app_2);
 
     // set when to stop
