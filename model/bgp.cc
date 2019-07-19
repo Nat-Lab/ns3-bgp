@@ -182,6 +182,8 @@ void Bgp::Tick() {
 }
 
 bool Bgp::ConnectPeer(Ptr<Peer> peer) {
+    if (!_running) return false;
+
     for (const Ptr<Session> session : _sessions) {
         if (session->peer == peer) {
             NS_LOG_INFO("session or fsm for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist, skipping.");
