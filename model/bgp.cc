@@ -63,6 +63,10 @@ TypeId Bgp::GetTypeId (void) {
         .AddAttribute("ClockInterval", "Time to wait between ticking FSMs",
             TimeValue(Seconds(1)),
             MakeTimeAccessor(&Bgp::_clock_interval),
+            MakeTimeChecker())
+        .AddAttribute("ErrorHold", "Time to wait before retry.",
+            TimeValue(Seconds(45)),
+            MakeTimeAccessor(&Bgp::_error_hold),
             MakeTimeChecker());
 
     return tid;
@@ -225,17 +229,24 @@ void Bgp::HandleConnectOutFailed(Ptr<Socket> socket) {
 }
 
 void Bgp::HandleClose(Ptr<Socket> socket) {
-    NS_LOG_LOGIC("handleing connection shutdown: " << socket);
+    NS_LOG_LOGIC("handling connection shutdown: " << socket);
 
     for (std::vector<Ptr<Session>>::iterator session = _sessions.begin();
          session != _sessions.end(); session++) {
         if ((*session)->socket == socket) {
+            
+            if (!(*session)->peer->passive) {
+                NS_LOG_LOGIC("schdeuled retry in 10 seconds.");
+                Simulator::Schedule(_error_hold, &Bgp::ConnectPeer, (*session)->peer);
+            }
+
             NS_LOG_INFO("dropping session of AS" << (*session)->peer->peer_asn << "/" << ((*session)->local_init ? 'L' : 'R') << " (" << (*session)->peer->peer_address << ").");
             (*session)->Drop();
             _sessions.erase(session);
             return;
         }
     }
+
 }
 
 void Bgp::HandleConnectIn(Ptr<Socket> socket, const Address &peer_addr) {

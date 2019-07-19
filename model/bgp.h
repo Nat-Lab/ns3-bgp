@@ -95,6 +95,7 @@ private:
 
     Time _hold_timer;
     Time _clock_interval;
+    Time _error_hold;
 
     BgpLog _logger;
     BgpNs3Clock _clock;
