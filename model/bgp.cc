@@ -235,8 +235,8 @@ void Bgp::HandleClose(Ptr<Socket> socket) {
          session != _sessions.end(); session++) {
         if ((*session)->socket == socket) {
             
-            if (!(*session)->peer->passive) {
-                NS_LOG_LOGIC("schdeuled retry in 10 seconds.");
+            if (_running && !(*session)->peer->passive) {
+                NS_LOG_LOGIC("scheduled retry in 10 seconds.");
                 Simulator::Schedule(_error_hold, &Bgp::ConnectPeer, this, (*session)->peer);
             }
 
