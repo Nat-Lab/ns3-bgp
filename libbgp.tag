@@ -1,6 +1,25 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <tagfile>
   <compound kind="file">
+    <name>bgp-afi.h</name>
+    <path>/Users/nat/projects/libbgp/src/</path>
+    <filename>bgp-afi_8h</filename>
+    <member kind="enumeration">
+      <type></type>
+      <name>Afi</name>
+      <anchorfile>bgp-afi_8h.html</anchorfile>
+      <anchor>a47068b6c3ed14ce7aebc0d5446cbda3c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>Safi</name>
+      <anchorfile>bgp-afi_8h.html</anchorfile>
+      <anchor>a30316ddc542d142d5ce90928fba1666c</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>bgp-bad-message.cc</name>
     <path>/Users/nat/projects/libbgp/src/</path>
     <filename>bgp-bad-message_8cc</filename>
@@ -26,9 +45,11 @@
     <name>bgp-capability.h</name>
     <path>/Users/nat/projects/libbgp/src/</path>
     <filename>bgp-capability_8h</filename>
+    <includes id="bgp-afi_8h" name="bgp-afi.h" local="yes" imported="no">bgp-afi.h</includes>
     <includes id="serializable_8h" name="serializable.h" local="yes" imported="no">serializable.h</includes>
     <class kind="class">libbgp::BgpCapability</class>
     <class kind="class">libbgp::BgpCapability4BytesAsn</class>
+    <class kind="class">libbgp::BgpCapabilityMpBgp</class>
     <class kind="class">libbgp::BgpCapabilityUnknow</class>
     <member kind="enumeration">
       <type></type>
@@ -43,7 +64,8 @@
     <path>/Users/nat/projects/libbgp/src/</path>
     <filename>bgp-config_8h</filename>
     <includes id="clock_8h" name="clock.h" local="yes" imported="no">clock.h</includes>
-    <includes id="bgp-rib_8h" name="bgp-rib.h" local="yes" imported="no">bgp-rib.h</includes>
+    <includes id="bgp-rib4_8h" name="bgp-rib4.h" local="yes" imported="no">bgp-rib4.h</includes>
+    <includes id="bgp-rib6_8h" name="bgp-rib6.h" local="yes" imported="no">bgp-rib6.h</includes>
     <includes id="bgp-filter_8h" name="bgp-filter.h" local="yes" imported="no">bgp-filter.h</includes>
     <includes id="bgp-out-handler_8h" name="bgp-out-handler.h" local="yes" imported="no">bgp-out-handler.h</includes>
     <includes id="bgp-log-handler_8h" name="bgp-log-handler.h" local="yes" imported="no">bgp-log-handler.h</includes>
@@ -66,43 +88,43 @@
       <type>const char *</type>
       <name>bgp_error_code_str</name>
       <anchorfile>bgp-errcode_8cc.html</anchorfile>
-      <anchor>a08d90c5112845d580006e7f1798fb890</anchor>
-      <arglist>[]</arglist>
+      <anchor>a5217dcfc07b6ff3e600fa7bdd6803e21</anchor>
+      <arglist>[7]</arglist>
     </member>
     <member kind="variable">
       <type>const char *</type>
       <name>bgp_header_error_subcode_str</name>
       <anchorfile>bgp-errcode_8cc.html</anchorfile>
-      <anchor>a4a26c9a33ba204b6d06a0324230fd51c</anchor>
-      <arglist>[]</arglist>
+      <anchor>a243c626a873a36c824973dc4c3fda9c8</anchor>
+      <arglist>[4]</arglist>
     </member>
     <member kind="variable">
       <type>const char *</type>
       <name>bgp_open_error_subcode_str</name>
       <anchorfile>bgp-errcode_8cc.html</anchorfile>
-      <anchor>a7f07e4c9388430bb273834855b5ef8fa</anchor>
-      <arglist>[]</arglist>
+      <anchor>a637b9ac678866dac6f430eb232c957ae</anchor>
+      <arglist>[8]</arglist>
     </member>
     <member kind="variable">
       <type>const char *</type>
       <name>bgp_update_error_str</name>
       <anchorfile>bgp-errcode_8cc.html</anchorfile>
-      <anchor>a98d65a3916d179c58b4b79114aed3ae3</anchor>
-      <arglist>[]</arglist>
+      <anchor>a3ca4aaaccff578acf61cb6c598beafe3</anchor>
+      <arglist>[12]</arglist>
     </member>
     <member kind="variable">
       <type>const char *</type>
       <name>bgp_fsm_error_str</name>
       <anchorfile>bgp-errcode_8cc.html</anchorfile>
-      <anchor>ac91f9c940cee8d0dd46cd21318a95d13</anchor>
-      <arglist>[]</arglist>
+      <anchor>a41fddc5d32f5736daa23d270466e4265</anchor>
+      <arglist>[4]</arglist>
     </member>
     <member kind="variable">
       <type>const char *</type>
       <name>bgp_cease_error_str</name>
       <anchorfile>bgp-errcode_8cc.html</anchorfile>
-      <anchor>a26b0aa32b3bbb193308ec619fe76b30e</anchor>
-      <arglist>[]</arglist>
+      <anchor>a7bf0f9cc7a3083663b83079d6dc43f02</anchor>
+      <arglist>[9]</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -153,71 +175,145 @@
     </member>
   </compound>
   <compound kind="file">
-    <name>bgp-error.cc</name>
-    <path>/Users/nat/projects/libbgp/src/</path>
-    <filename>bgp-error_8cc</filename>
-    <includes id="bgp-error_8h" name="bgp-error.h" local="yes" imported="no">bgp-error.h</includes>
-    <member kind="function">
-      <type>void</type>
-      <name>_bgp_error</name>
-      <anchorfile>bgp-error_8cc.html</anchorfile>
-      <anchor>adc11d21b8fd745e542a9f302dc49bafe</anchor>
-      <arglist>(const char *format_str,...)</arglist>
-    </member>
-    <member kind="function">
-      <type>const char *</type>
-      <name>get_bgp_errors</name>
-      <anchorfile>bgp-error_8cc.html</anchorfile>
-      <anchor>ac876eb3ce85c8b6079fd436fd8e4fc41</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>clear_bgp_errors</name>
-      <anchorfile>bgp-error_8cc.html</anchorfile>
-      <anchor>a8a69b63fe54c19bd95bcfd867ea6eb0a</anchor>
-      <arglist>()</arglist>
-    </member>
-  </compound>
-  <compound kind="file">
-    <name>bgp-error.h</name>
-    <path>/Users/nat/projects/libbgp/src/</path>
-    <filename>bgp-error_8h</filename>
-    <member kind="function">
-      <type>void</type>
-      <name>_bgp_error</name>
-      <anchorfile>bgp-error_8cc.html</anchorfile>
-      <anchor>adc11d21b8fd745e542a9f302dc49bafe</anchor>
-      <arglist>(const char *format_str,...)</arglist>
-    </member>
-    <member kind="function">
-      <type>const char *</type>
-      <name>get_bgp_errors</name>
-      <anchorfile>bgp-error_8cc.html</anchorfile>
-      <anchor>ac876eb3ce85c8b6079fd436fd8e4fc41</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>clear_bgp_errors</name>
-      <anchorfile>bgp-error_8cc.html</anchorfile>
-      <anchor>a8a69b63fe54c19bd95bcfd867ea6eb0a</anchor>
-      <arglist>()</arglist>
-    </member>
-  </compound>
-  <compound kind="file">
     <name>bgp-filter.cc</name>
     <path>/Users/nat/projects/libbgp/src/</path>
     <filename>bgp-filter_8cc</filename>
     <includes id="bgp-filter_8h" name="bgp-filter.h" local="yes" imported="no">bgp-filter.h</includes>
+    <includes id="value-op_8h" name="value-op.h" local="yes" imported="no">value-op.h</includes>
   </compound>
   <compound kind="file">
     <name>bgp-filter.h</name>
     <path>/Users/nat/projects/libbgp/src/</path>
     <filename>bgp-filter_8h</filename>
-    <includes id="route_8h" name="route.h" local="yes" imported="no">route.h</includes>
+    <includes id="bgp-afi_8h" name="bgp-afi.h" local="yes" imported="no">bgp-afi.h</includes>
+    <includes id="prefix4_8h" name="prefix4.h" local="yes" imported="no">prefix4.h</includes>
+    <includes id="prefix6_8h" name="prefix6.h" local="yes" imported="no">prefix6.h</includes>
+    <includes id="bgp-path-attrib_8h" name="bgp-path-attrib.h" local="yes" imported="no">bgp-path-attrib.h</includes>
     <class kind="class">libbgp::BgpFilterRule</class>
+    <class kind="class">libbgp::BgpFilterRuleRoute</class>
+    <class kind="class">libbgp::BgpFilterRuleRoute4</class>
+    <class kind="class">libbgp::BgpFilterRuleRoute6</class>
+    <class kind="class">libbgp::BgpFilterRuleAsPath</class>
+    <class kind="class">libbgp::BgpFilterRuleCommunity</class>
     <class kind="class">libbgp::BgpFilterRules</class>
+    <member kind="enumeration">
+      <type></type>
+      <name>BgpFilterRuleType</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a5d17d0067f21c604db6664cc491547a8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>F_ROUTE</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a5d17d0067f21c604db6664cc491547a8a9163dc67241bd112d2b10ab77eeed52d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>F_AS_PATH</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a5d17d0067f21c604db6664cc491547a8a9f42107fd36a70f8f875a76780053d2b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>F_COMMUNITY</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a5d17d0067f21c604db6664cc491547a8aa0a62a0dab0ab987ecacbd5c729801be</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>BgpFilterRuleRouteMatchType</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a8e60861335e07d6ae40515b00d45cea4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_EQ</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a8e60861335e07d6ae40515b00d45cea4a9ea483b720a308c9a96681a1260e33d0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_NE</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a8e60861335e07d6ae40515b00d45cea4ad0a48c415f1e43033193ada7f402359a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_GT</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a8e60861335e07d6ae40515b00d45cea4a38ba7dd6f68bc2bb4e7e8c040562205b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_LT</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a8e60861335e07d6ae40515b00d45cea4a9206a6e80f607892f6d5611709719b0c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_GE</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a8e60861335e07d6ae40515b00d45cea4a94ab5d8ff3e0eaa53917cf15acb70c02</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_LE</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a8e60861335e07d6ae40515b00d45cea4a9350c19e83e76d427e2ff5c1149ba638</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>BgpFilterRuleAsPathMatchType</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a22494fc9dc037cd8c6b7b40377ded35f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_HAS_ASN</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a22494fc9dc037cd8c6b7b40377ded35fa91d04966032d4ff43db604a9b4b6eef7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_NOT_HAS_ASN</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a22494fc9dc037cd8c6b7b40377ded35fad45494682f19fceef914dc40913e6c43</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_FROM_ASN</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a22494fc9dc037cd8c6b7b40377ded35fa58706a88aad2b5b89f9e1dac9a7ac41f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_NOT_FROM_ASN</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a22494fc9dc037cd8c6b7b40377ded35fabb2f4ed0267cedd5f1cad20ab323bf81</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>BgpFilterRuleCommunityMatchType</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a6af1e0ba40fe9a19560545629e8de84b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_HAS_COMMUNITY</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a6af1e0ba40fe9a19560545629e8de84ba45a1eff2e234dea053541eb0308d8686</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>M_NOT_HAS_COMMUNITY</name>
+      <anchorfile>bgp-filter_8h.html</anchorfile>
+      <anchor>a6af1e0ba40fe9a19560545629e8de84ba5c09a7b52360b1ef9c9d9020b2fe215f</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="enumeration">
       <type></type>
       <name>BgpFilterOP</name>
@@ -245,21 +341,9 @@
     </member>
     <member kind="enumeration">
       <type></type>
-      <name>BgpFilterType</name>
+      <name>BgpWellKnownCommunity</name>
       <anchorfile>bgp-filter_8h.html</anchorfile>
-      <anchor>a82b904d0d0a61391e89f90a5bd87a83b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STRICT</name>
-      <anchorfile>bgp-filter_8h.html</anchorfile>
-      <anchor>a82b904d0d0a61391e89f90a5bd87a83bada57eab5f4d63c8dab6e77b016488f38</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>LOOSE</name>
-      <anchorfile>bgp-filter_8h.html</anchorfile>
-      <anchor>a82b904d0d0a61391e89f90a5bd87a83ba1c55aa16021d15286787691f7c696ef3</anchor>
+      <anchor>a2c0c0673bbc481e41473298eb8cb6ab8</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -276,7 +360,8 @@
     <path>/Users/nat/projects/libbgp/src/</path>
     <filename>bgp-fsm_8h</filename>
     <includes id="clock_8h" name="clock.h" local="yes" imported="no">clock.h</includes>
-    <includes id="bgp-rib_8h" name="bgp-rib.h" local="yes" imported="no">bgp-rib.h</includes>
+    <includes id="bgp-rib4_8h" name="bgp-rib4.h" local="yes" imported="no">bgp-rib4.h</includes>
+    <includes id="bgp-rib6_8h" name="bgp-rib6.h" local="yes" imported="no">bgp-rib6.h</includes>
     <includes id="bgp-config_8h" name="bgp-config.h" local="yes" imported="no">bgp-config.h</includes>
     <includes id="bgp-sink_8h" name="bgp-sink.h" local="yes" imported="no">bgp-sink.h</includes>
     <includes id="route-event-receiver_8h" name="route-event-receiver.h" local="yes" imported="no">route-event-receiver.h</includes>
@@ -399,6 +484,7 @@
     <filename>bgp-path-attrib_8cc</filename>
     <includes id="bgp-path-attrib_8h" name="bgp-path-attrib.h" local="yes" imported="no">bgp-path-attrib.h</includes>
     <includes id="bgp-errcode_8h" name="bgp-errcode.h" local="yes" imported="no">bgp-errcode.h</includes>
+    <includes id="bgp-afi_8h" name="bgp-afi.h" local="yes" imported="no">bgp-afi.h</includes>
     <includes id="value-op_8h" name="value-op.h" local="yes" imported="no">value-op.h</includes>
   </compound>
   <compound kind="file">
@@ -406,6 +492,7 @@
     <path>/Users/nat/projects/libbgp/src/</path>
     <filename>bgp-path-attrib_8h</filename>
     <includes id="serializable_8h" name="serializable.h" local="yes" imported="no">serializable.h</includes>
+    <includes id="prefix6_8h" name="prefix6.h" local="yes" imported="no">prefix6.h</includes>
     <class kind="class">libbgp::BgpPathAttrib</class>
     <class kind="class">libbgp::BgpPathAttribOrigin</class>
     <class kind="class">libbgp::BgpAsPathSegment</class>
@@ -418,6 +505,11 @@
     <class kind="class">libbgp::BgpPathAttribAs4Path</class>
     <class kind="class">libbgp::BgpPathAttribAs4Aggregator</class>
     <class kind="class">libbgp::BgpPathAttribCommunity</class>
+    <class kind="class">libbgp::BgpPathAttribMpNlriBase</class>
+    <class kind="class">libbgp::BgpPathAttribMpReachNlriIpv6</class>
+    <class kind="class">libbgp::BgpPathAttribMpReachNlriUnknow</class>
+    <class kind="class">libbgp::BgpPathAttribMpUnreachNlriIpv6</class>
+    <class kind="class">libbgp::BgpPathAttribMpUnreachNlriUnknow</class>
     <member kind="enumeration">
       <type></type>
       <name>BgpPathAttribType</name>
@@ -441,19 +533,36 @@
     </member>
   </compound>
   <compound kind="file">
-    <name>bgp-rib.cc</name>
+    <name>bgp-rib4.cc</name>
     <path>/Users/nat/projects/libbgp/src/</path>
-    <filename>bgp-rib_8cc</filename>
-    <includes id="bgp-rib_8h" name="bgp-rib.h" local="yes" imported="no">bgp-rib.h</includes>
+    <filename>bgp-rib4_8cc</filename>
+    <includes id="bgp-rib4_8h" name="bgp-rib4.h" local="yes" imported="no">bgp-rib4.h</includes>
   </compound>
   <compound kind="file">
-    <name>bgp-rib.h</name>
+    <name>bgp-rib4.h</name>
     <path>/Users/nat/projects/libbgp/src/</path>
-    <filename>bgp-rib_8h</filename>
-    <includes id="route_8h" name="route.h" local="yes" imported="no">route.h</includes>
+    <filename>bgp-rib4_8h</filename>
+    <includes id="prefix4_8h" name="prefix4.h" local="yes" imported="no">prefix4.h</includes>
     <includes id="bgp-path-attrib_8h" name="bgp-path-attrib.h" local="yes" imported="no">bgp-path-attrib.h</includes>
-    <class kind="class">libbgp::BgpRibEntry</class>
-    <class kind="class">libbgp::BgpRib</class>
+    <includes id="route-event-bus_8h" name="route-event-bus.h" local="yes" imported="no">route-event-bus.h</includes>
+    <class kind="class">libbgp::BgpRib4Entry</class>
+    <class kind="class">libbgp::BgpRib4</class>
+  </compound>
+  <compound kind="file">
+    <name>bgp-rib6.cc</name>
+    <path>/Users/nat/projects/libbgp/src/</path>
+    <filename>bgp-rib6_8cc</filename>
+    <includes id="bgp-rib6_8h" name="bgp-rib6.h" local="yes" imported="no">bgp-rib6.h</includes>
+  </compound>
+  <compound kind="file">
+    <name>bgp-rib6.h</name>
+    <path>/Users/nat/projects/libbgp/src/</path>
+    <filename>bgp-rib6_8h</filename>
+    <includes id="prefix6_8h" name="prefix6.h" local="yes" imported="no">prefix6.h</includes>
+    <includes id="bgp-path-attrib_8h" name="bgp-path-attrib.h" local="yes" imported="no">bgp-path-attrib.h</includes>
+    <includes id="route-event-bus_8h" name="route-event-bus.h" local="yes" imported="no">route-event-bus.h</includes>
+    <class kind="class">libbgp::BgpRib6Entry</class>
+    <class kind="class">libbgp::BgpRib6</class>
   </compound>
   <compound kind="file">
     <name>bgp-sink.cc</name>
@@ -475,13 +584,14 @@
     <filename>bgp-update-message_8cc</filename>
     <includes id="bgp-update-message_8h" name="bgp-update-message.h" local="yes" imported="no">bgp-update-message.h</includes>
     <includes id="bgp-errcode_8h" name="bgp-errcode.h" local="yes" imported="no">bgp-errcode.h</includes>
+    <includes id="bgp-afi_8h" name="bgp-afi.h" local="yes" imported="no">bgp-afi.h</includes>
     <includes id="value-op_8h" name="value-op.h" local="yes" imported="no">value-op.h</includes>
   </compound>
   <compound kind="file">
     <name>bgp-update-message.h</name>
     <path>/Users/nat/projects/libbgp/src/</path>
     <filename>bgp-update-message_8h</filename>
-    <includes id="route_8h" name="route.h" local="yes" imported="no">route.h</includes>
+    <includes id="prefix4_8h" name="prefix4.h" local="yes" imported="no">prefix4.h</includes>
     <includes id="bgp-message_8h" name="bgp-message.h" local="yes" imported="no">bgp-message.h</includes>
     <includes id="bgp-path-attrib_8h" name="bgp-path-attrib.h" local="yes" imported="no">bgp-path-attrib.h</includes>
     <class kind="class">libbgp::BgpUpdateMessage</class>
@@ -518,6 +628,104 @@
     <filename>fd-out-handler_8h</filename>
     <includes id="bgp-out-handler_8h" name="bgp-out-handler.h" local="yes" imported="no">bgp-out-handler.h</includes>
     <class kind="class">libbgp::FdOutHandler</class>
+  </compound>
+  <compound kind="file">
+    <name>prefix.h</name>
+    <path>/Users/nat/projects/libbgp/src/</path>
+    <filename>prefix_8h</filename>
+    <includes id="bgp-afi_8h" name="bgp-afi.h" local="yes" imported="no">bgp-afi.h</includes>
+    <class kind="class">libbgp::Prefix</class>
+    <member kind="function">
+      <type>uint32_t</type>
+      <name>cidr_to_mask</name>
+      <anchorfile>prefix_8h.html</anchorfile>
+      <anchor>a3adae39480242b265fc4241dbe879114</anchor>
+      <arglist>(uint8_t cidr)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>prefix4.cc</name>
+    <path>/Users/nat/projects/libbgp/src/</path>
+    <filename>prefix4_8cc</filename>
+    <includes id="prefix4_8h" name="prefix4.h" local="yes" imported="no">prefix4.h</includes>
+    <includes id="value-op_8h" name="value-op.h" local="yes" imported="no">value-op.h</includes>
+    <member kind="function">
+      <type>uint32_t</type>
+      <name>cidr_to_mask</name>
+      <anchorfile>prefix_8h.html</anchorfile>
+      <anchor>a3adae39480242b265fc4241dbe879114</anchor>
+      <arglist>(uint8_t cidr)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>prefix4.h</name>
+    <path>/Users/nat/projects/libbgp/src/</path>
+    <filename>prefix4_8h</filename>
+    <includes id="prefix_8h" name="prefix.h" local="yes" imported="no">prefix.h</includes>
+    <class kind="class">libbgp::Prefix4</class>
+    <member kind="function">
+      <type>uint32_t</type>
+      <name>cidr_to_mask</name>
+      <anchorfile>prefix_8h.html</anchorfile>
+      <anchor>a3adae39480242b265fc4241dbe879114</anchor>
+      <arglist>(uint8_t cidr)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>prefix6.cc</name>
+    <path>/Users/nat/projects/libbgp/src/</path>
+    <filename>prefix6_8cc</filename>
+    <includes id="prefix6_8h" name="prefix6.h" local="yes" imported="no">prefix6.h</includes>
+    <includes id="value-op_8h" name="value-op.h" local="yes" imported="no">value-op.h</includes>
+    <member kind="function">
+      <type>bool</type>
+      <name>cidr_to_mask6</name>
+      <anchorfile>prefix6_8cc.html</anchorfile>
+      <anchor>aa6f7fccd3ed65e72c6a1dcd6ee099d15</anchor>
+      <arglist>(uint8_t src, uint8_t dst[16])</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>mask_ipv6</name>
+      <anchorfile>prefix6_8cc.html</anchorfile>
+      <anchor>a8e1ac0b88e2109c74eaa940efb8c67ad</anchor>
+      <arglist>(const uint8_t prefix[16], uint8_t mask, uint8_t masked_addr[16])</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>v6addr_is_zero</name>
+      <anchorfile>prefix6_8cc.html</anchorfile>
+      <anchor>a8871328796a8421997938dc6ad3c0ba4</anchor>
+      <arglist>(const uint8_t prefix[16])</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>prefix6.h</name>
+    <path>/Users/nat/projects/libbgp/src/</path>
+    <filename>prefix6_8h</filename>
+    <includes id="prefix_8h" name="prefix.h" local="yes" imported="no">prefix.h</includes>
+    <class kind="class">libbgp::Prefix6</class>
+    <member kind="function">
+      <type>bool</type>
+      <name>cidr_to_mask6</name>
+      <anchorfile>prefix6_8cc.html</anchorfile>
+      <anchor>aa6f7fccd3ed65e72c6a1dcd6ee099d15</anchor>
+      <arglist>(uint8_t src, uint8_t dst[16])</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>mask_ipv6</name>
+      <anchorfile>prefix6_8cc.html</anchorfile>
+      <anchor>a8e1ac0b88e2109c74eaa940efb8c67ad</anchor>
+      <arglist>(const uint8_t prefix[16], uint8_t mask, uint8_t masked_addr[16])</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>v6addr_is_zero</name>
+      <anchorfile>prefix6_8cc.html</anchorfile>
+      <anchor>a8871328796a8421997938dc6ad3c0ba4</anchor>
+      <arglist>(const uint8_t prefix[16])</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>realtime-clock.cc</name>
@@ -560,8 +768,10 @@
     <includes id="bgp-path-attrib_8h" name="bgp-path-attrib.h" local="yes" imported="no">bgp-path-attrib.h</includes>
     <includes id="bgp-update-message_8h" name="bgp-update-message.h" local="yes" imported="no">bgp-update-message.h</includes>
     <class kind="class">libbgp::RouteEvent</class>
-    <class kind="class">libbgp::RouteAddEvent</class>
-    <class kind="class">libbgp::RouteWithdrawEvent</class>
+    <class kind="class">libbgp::Route4AddEvent</class>
+    <class kind="class">libbgp::Route4WithdrawEvent</class>
+    <class kind="class">libbgp::Route6AddEvent</class>
+    <class kind="class">libbgp::Route6WithdrawEvent</class>
     <class kind="class">libbgp::RouteCollisionEvent</class>
     <member kind="enumeration">
       <type></type>
@@ -569,32 +779,6 @@
       <anchorfile>route-event_8h.html</anchorfile>
       <anchor>ae8c750a6779e877ff88ee962ff8dab57</anchor>
       <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="file">
-    <name>route.cc</name>
-    <path>/Users/nat/projects/libbgp/src/</path>
-    <filename>route_8cc</filename>
-    <includes id="route_8h" name="route.h" local="yes" imported="no">route.h</includes>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>cidr_to_mask</name>
-      <anchorfile>route_8cc.html</anchorfile>
-      <anchor>a3adae39480242b265fc4241dbe879114</anchor>
-      <arglist>(uint8_t cidr)</arglist>
-    </member>
-  </compound>
-  <compound kind="file">
-    <name>route.h</name>
-    <path>/Users/nat/projects/libbgp/src/</path>
-    <filename>route_8h</filename>
-    <class kind="class">libbgp::Route</class>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>cidr_to_mask</name>
-      <anchorfile>route_8cc.html</anchorfile>
-      <anchor>a3adae39480242b265fc4241dbe879114</anchor>
-      <arglist>(uint8_t cidr)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -789,6 +973,46 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>libbgp::BgpCapabilityMpBgp</name>
+    <filename>classlibbgp_1_1BgpCapabilityMpBgp.html</filename>
+    <base>libbgp::BgpCapability</base>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>doPrint</name>
+      <anchorfile>classlibbgp_1_1BgpCapabilityMpBgp.html</anchorfile>
+      <anchor>a6647442cf6ea81aa654950925e6a1cdb</anchor>
+      <arglist>(size_t indent, uint8_t **to, size_t *buf_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>parse</name>
+      <anchorfile>classlibbgp_1_1BgpCapabilityMpBgp.html</anchorfile>
+      <anchor>aabcf1be4b8c98fd43b298dd6c7e702e9</anchor>
+      <arglist>(const uint8_t *from, size_t msg_sz)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>write</name>
+      <anchorfile>classlibbgp_1_1BgpCapabilityMpBgp.html</anchorfile>
+      <anchor>ad3922b9a618c649a8161d03ccd62a30d</anchor>
+      <arglist>(uint8_t *to, size_t buf_sz) const</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint16_t</type>
+      <name>afi</name>
+      <anchorfile>classlibbgp_1_1BgpCapabilityMpBgp.html</anchorfile>
+      <anchor>a5073dedf31ecd25f0d50449f83fe8791</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint8_t</type>
+      <name>safi</name>
+      <anchorfile>classlibbgp_1_1BgpCapabilityMpBgp.html</anchorfile>
+      <anchor>a63e85022a98bd9890c7c8a19843a880b</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
     <name>libbgp::BgpCapabilityUnknow</name>
     <filename>classlibbgp_1_1BgpCapabilityUnknow.html</filename>
     <base>libbgp::BgpCapability</base>
@@ -833,16 +1057,30 @@
     <filename>structlibbgp_1_1BgpConfig.html</filename>
     <member kind="variable">
       <type>BgpFilterRules</type>
-      <name>in_filters</name>
+      <name>in_filters4</name>
       <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
-      <anchor>aa6bdb101f5f253b0236b067ab449ca60</anchor>
+      <anchor>a168f05dbe1ea4c3f618b6f0bc98e103e</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>BgpFilterRules</type>
-      <name>out_filters</name>
+      <name>out_filters4</name>
       <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
-      <anchor>a893a38816397b093af04ed3ca39f9ff4</anchor>
+      <anchor>aa665a75d3095d3e28897c4bdda689ef6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>BgpFilterRules</type>
+      <name>in_filters6</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>a05b0546721998530aa0341d28ad267db</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>BgpFilterRules</type>
+      <name>out_filters6</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>ae079fdb88338adfa1b24341e6daa4a00</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -860,10 +1098,17 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>BgpRib *</type>
-      <name>rib</name>
+      <type>BgpRib4 *</type>
+      <name>rib4</name>
       <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
-      <anchor>a6ef827d9bd4ab03278adf89e4bebd165</anchor>
+      <anchor>a4c9be0a50513a73a908efefdbcb1be92</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>BgpRib6 *</type>
+      <name>rib6</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>a6c9635d24974028d0a7e2c6b37d42527</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -888,6 +1133,20 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
+      <type>bool</type>
+      <name>mp_bgp_ipv4</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>a6726cccab854ccc0c2efd4abb8d1f37a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>mp_bgp_ipv6</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>a6d9218e15a9ad321c22042405777d756</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
       <type>uint32_t</type>
       <name>asn</name>
       <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
@@ -909,38 +1168,66 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>uint32_t</type>
-      <name>peering_lan_prefix</name>
+      <type>Prefix4</type>
+      <name>peering_lan4</name>
       <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
-      <anchor>a03654f4741f14505909ce0efe688191a</anchor>
+      <anchor>aa40956bb41579f1db353d41db1383f4f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Prefix6</type>
+      <name>peering_lan6</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>aed8375964f1736d02bdff2f2a5944185</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>no_nexthop_check4</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>a565e7bbdef0c8a7221008379b51f1e49</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32_t</type>
+      <name>default_nexthop4</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>a435eab7547c46ec544b56fc8b381785f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>forced_default_nexthop4</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>a64b058158a17c5db5c293fc5c73d3ef7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>no_nexthop_check6</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>af32036c2a34be75beb4e8105b7d06883</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>uint8_t</type>
-      <name>peering_lan_length</name>
+      <name>default_nexthop6_global</name>
       <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
-      <anchor>aee3589e0edf72d85c106f1567a9bac4a</anchor>
-      <arglist></arglist>
+      <anchor>a2ce1fca76330faac4d42007cc5f35c39</anchor>
+      <arglist>[16]</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint8_t</type>
+      <name>default_nexthop6_linklocal</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>afa13bb920d5ab79b1a308fc451756b48</anchor>
+      <arglist>[16]</arglist>
     </member>
     <member kind="variable">
       <type>bool</type>
-      <name>no_nexthop_check</name>
+      <name>forced_default_nexthop6</name>
       <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
-      <anchor>a2e3e9617d3e7bdc4d90c7899eb456864</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>uint32_t</type>
-      <name>nexthop</name>
-      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
-      <anchor>a815897482ba557776bef52b47b4ea988</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>bool</type>
-      <name>forced_default_nexthop</name>
-      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
-      <anchor>a7809bedbb1037aff0d1b162ca66c11f5</anchor>
+      <anchor>a3c454b67d590ace193461f35badffdff</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -957,44 +1244,199 @@
       <anchor>a85433acb7a5ca8620fa4cf79f5d50798</anchor>
       <arglist></arglist>
     </member>
+    <member kind="variable">
+      <type>int8_t</type>
+      <name>allow_local_as</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>a4e3d9af2a232e3580c83829477c5e219</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int32_t</type>
+      <name>weight</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>a4523be3046506516bcf379cd1ebe4762</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>no_autotick</name>
+      <anchorfile>structlibbgp_1_1BgpConfig.html</anchorfile>
+      <anchor>a27baf1be24c26934a1ecd164869709bf</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="class">
     <name>libbgp::BgpFilterRule</name>
     <filename>classlibbgp_1_1BgpFilterRule.html</filename>
-    <member kind="function">
-      <type></type>
-      <name>BgpFilterRule</name>
+    <member kind="function" virtualness="pure">
+      <type>virtual BgpFilterOP</type>
+      <name>apply</name>
       <anchorfile>classlibbgp_1_1BgpFilterRule.html</anchorfile>
-      <anchor>aef1bfa01ab131e6235b9e0f9f4ecb445</anchor>
-      <arglist>(BgpFilterType type, BgpFilterOP op, uint32_t prefix, uint8_t mask)</arglist>
+      <anchor>a396ad19d8f912a91b78253ac93644554</anchor>
+      <arglist>(const Prefix &amp;prefix, const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; &amp;attribs)=0</arglist>
     </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpFilterRuleAsPath</name>
+    <filename>classlibbgp_1_1BgpFilterRuleAsPath.html</filename>
+    <base>libbgp::BgpFilterRule</base>
     <member kind="function">
       <type></type>
-      <name>BgpFilterRule</name>
-      <anchorfile>classlibbgp_1_1BgpFilterRule.html</anchorfile>
-      <anchor>a0ed64d801f79830fb7616f721e9fba6e</anchor>
-      <arglist>(BgpFilterType type, BgpFilterOP op, const char *prefix, uint8_t mask)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>BgpFilterRule</name>
-      <anchorfile>classlibbgp_1_1BgpFilterRule.html</anchorfile>
-      <anchor>a7f98c769b5382c322bc6f6be1497860f</anchor>
-      <arglist>(BgpFilterType type, BgpFilterOP op, const Route &amp;prefix)</arglist>
+      <name>BgpFilterRuleAsPath</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleAsPath.html</anchorfile>
+      <anchor>aa3d51e83fa2faa2e4b0e32ed38557bab</anchor>
+      <arglist>(BgpFilterOP op, BgpFilterRuleAsPathMatchType type, uint32_t asn)</arglist>
     </member>
     <member kind="function">
       <type>BgpFilterOP</type>
       <name>apply</name>
-      <anchorfile>classlibbgp_1_1BgpFilterRule.html</anchorfile>
-      <anchor>a5d08edc8a58347abb543a5f905228b8a</anchor>
-      <arglist>(uint32_t prefix, uint8_t mask) const</arglist>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleAsPath.html</anchorfile>
+      <anchor>a6df571b7a2cf78e7ef1c6a1edd713f37</anchor>
+      <arglist>(const Prefix &amp;prefix, const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; &amp;attribs)</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32_t</type>
+      <name>asn</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleAsPath.html</anchorfile>
+      <anchor>a81fc169b2f77294c28e9c58de32ce24a</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpFilterRuleCommunity</name>
+    <filename>classlibbgp_1_1BgpFilterRuleCommunity.html</filename>
+    <base>libbgp::BgpFilterRule</base>
+    <member kind="function">
+      <type></type>
+      <name>BgpFilterRuleCommunity</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleCommunity.html</anchorfile>
+      <anchor>ada70e5e64473e5093b5aa5f7db4462a4</anchor>
+      <arglist>(BgpFilterOP op, BgpFilterRuleCommunityMatchType type, uint16_t asn, uint16_t keyword)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>BgpFilterRuleCommunity</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleCommunity.html</anchorfile>
+      <anchor>aa20b0ccd1350d7fca8d54cdd938cdb0d</anchor>
+      <arglist>(BgpFilterOP op, BgpFilterRuleCommunityMatchType type, uint32_t community)</arglist>
     </member>
     <member kind="function">
       <type>BgpFilterOP</type>
       <name>apply</name>
-      <anchorfile>classlibbgp_1_1BgpFilterRule.html</anchorfile>
-      <anchor>aa7fd706d4e0e3f9cc535121c82dcb21c</anchor>
-      <arglist>(const Route &amp;prefix) const</arglist>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleCommunity.html</anchorfile>
+      <anchor>afec89febd53af55d0c5377bb8f5031f3</anchor>
+      <arglist>(const Prefix &amp;prefix, const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; &amp;attribs)</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32_t</type>
+      <name>community</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleCommunity.html</anchorfile>
+      <anchor>a5722d432a50611a1c83d2ba78d428fee</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpFilterRuleRoute</name>
+    <filename>classlibbgp_1_1BgpFilterRuleRoute.html</filename>
+    <templarg>T</templarg>
+    <base>libbgp::BgpFilterRule</base>
+    <member kind="function">
+      <type></type>
+      <name>BgpFilterRuleRoute</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute.html</anchorfile>
+      <anchor>ad6d3c9e082f231dc454c33d4b26ad986</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~BgpFilterRuleRoute</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute.html</anchorfile>
+      <anchor>a488f0a59a76a3e30c246d8170ba5077d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type>T</type>
+      <name>prefix</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute.html</anchorfile>
+      <anchor>a2faefc07cbf7754c056db88524fac124</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpFilterRuleRoute4</name>
+    <filename>classlibbgp_1_1BgpFilterRuleRoute4.html</filename>
+    <base>BgpFilterRuleRoute&lt; Prefix4 &gt;</base>
+    <member kind="function">
+      <type></type>
+      <name>BgpFilterRuleRoute4</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute4.html</anchorfile>
+      <anchor>a5bd5981d2c3f745b20a627c6283e5235</anchor>
+      <arglist>(BgpFilterOP op, BgpFilterRuleRouteMatchType type, const Prefix4 &amp;prefix)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpFilterRuleRoute6</name>
+    <filename>classlibbgp_1_1BgpFilterRuleRoute6.html</filename>
+    <base>BgpFilterRuleRoute&lt; Prefix6 &gt;</base>
+    <member kind="function">
+      <type></type>
+      <name>BgpFilterRuleRoute6</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute6.html</anchorfile>
+      <anchor>a2914ea56c24b939238bd6f2a7971758b</anchor>
+      <arglist>(BgpFilterOP op, BgpFilterRuleRouteMatchType type, const Prefix6 &amp;prefix)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>BgpFilterRuleRoute&lt; Prefix4 &gt;</name>
+    <filename>classlibbgp_1_1BgpFilterRuleRoute.html</filename>
+    <base>libbgp::BgpFilterRule</base>
+    <member kind="function">
+      <type></type>
+      <name>BgpFilterRuleRoute</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute.html</anchorfile>
+      <anchor>ad6d3c9e082f231dc454c33d4b26ad986</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~BgpFilterRuleRoute</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute.html</anchorfile>
+      <anchor>a488f0a59a76a3e30c246d8170ba5077d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type>Prefix4</type>
+      <name>prefix</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute.html</anchorfile>
+      <anchor>a2faefc07cbf7754c056db88524fac124</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>BgpFilterRuleRoute&lt; Prefix6 &gt;</name>
+    <filename>classlibbgp_1_1BgpFilterRuleRoute.html</filename>
+    <base>libbgp::BgpFilterRule</base>
+    <member kind="function">
+      <type></type>
+      <name>BgpFilterRuleRoute</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute.html</anchorfile>
+      <anchor>ad6d3c9e082f231dc454c33d4b26ad986</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~BgpFilterRuleRoute</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute.html</anchorfile>
+      <anchor>a488f0a59a76a3e30c246d8170ba5077d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type>Prefix6</type>
+      <name>prefix</name>
+      <anchorfile>classlibbgp_1_1BgpFilterRuleRoute.html</anchorfile>
+      <anchor>a2faefc07cbf7754c056db88524fac124</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -1018,22 +1460,15 @@
       <type>void</type>
       <name>append</name>
       <anchorfile>classlibbgp_1_1BgpFilterRules.html</anchorfile>
-      <anchor>a66f03e71e145a6d564450403365e3711</anchor>
+      <anchor>a56314eaf305bf29b8b3b8eaf027b01ed</anchor>
       <arglist>(const BgpFilterRule &amp;rule)</arglist>
     </member>
     <member kind="function">
       <type>BgpFilterOP</type>
       <name>apply</name>
       <anchorfile>classlibbgp_1_1BgpFilterRules.html</anchorfile>
-      <anchor>a3fe1b4b6a822f6db981d5cd880614bfb</anchor>
-      <arglist>(uint32_t prefix, uint32_t mask) const</arglist>
-    </member>
-    <member kind="function">
-      <type>BgpFilterOP</type>
-      <name>apply</name>
-      <anchorfile>classlibbgp_1_1BgpFilterRules.html</anchorfile>
-      <anchor>a2c876e0f333a447406e386634f1aa687</anchor>
-      <arglist>(const Route &amp;prefix) const</arglist>
+      <anchor>ac327fdbbab5bc6c691f26d585b0b4588</anchor>
+      <arglist>(const Prefix &amp;prefix, const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; &amp;attribs)</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -1076,10 +1511,17 @@
       <arglist>() const</arglist>
     </member>
     <member kind="function">
-      <type>BgpRib &amp;</type>
-      <name>getRib</name>
+      <type>BgpRib4 &amp;</type>
+      <name>getRib4</name>
       <anchorfile>classlibbgp_1_1BgpFsm.html</anchorfile>
-      <anchor>a7a168aef9826f039eac5349d8aae35f1</anchor>
+      <anchor>acea4bb421e5856673c13bf409e066574</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>BgpRib6 &amp;</type>
+      <name>getRib6</name>
+      <anchorfile>classlibbgp_1_1BgpFsm.html</anchorfile>
+      <anchor>a5e76501937300e0b1b6ceef779962c16</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -1338,6 +1780,13 @@
       <arglist>(uint8_t code) const</arglist>
     </member>
     <member kind="function">
+      <type>bool</type>
+      <name>addCapability</name>
+      <anchorfile>classlibbgp_1_1BgpOpenMessage.html</anchorfile>
+      <anchor>abdbb3b1bf931b13767600398f9682869</anchor>
+      <arglist>(std::shared_ptr&lt; BgpCapability &gt; capability)</arglist>
+    </member>
+    <member kind="function">
       <type>ssize_t</type>
       <name>doPrint</name>
       <anchorfile>classlibbgp_1_1BgpOpenMessage.html</anchorfile>
@@ -1357,6 +1806,13 @@
       <anchorfile>classlibbgp_1_1BgpOpenMessage.html</anchorfile>
       <anchor>a7769ef9a1f4a656ec63ef08e59c780d7</anchor>
       <arglist>(uint8_t *to, size_t buf_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::vector&lt; std::shared_ptr&lt; BgpCapability &gt; &gt; &amp;</type>
+      <name>getCapabilities</name>
+      <anchorfile>classlibbgp_1_1BgpOpenMessage.html</anchorfile>
+      <anchor>a2327d262fd04686fd53b006f072b0b37</anchor>
+      <arglist>() const</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -1470,6 +1926,13 @@
       <anchor>a9f726edd332787d4fb8dca86f3888cda</anchor>
       <arglist>() const</arglist>
     </member>
+    <member kind="function">
+      <type>BgpPathAttrib *</type>
+      <name>clone</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttrib.html</anchorfile>
+      <anchor>a4a504e86678c06d27a54fe5ae0e7ddf6</anchor>
+      <arglist>(BgpLogHandler *new_logger) const</arglist>
+    </member>
     <member kind="function" virtualness="virtual">
       <type>virtual BgpPathAttrib *</type>
       <name>clone</name>
@@ -1485,10 +1948,10 @@
       <arglist>()</arglist>
     </member>
     <member kind="function" static="yes">
-      <type>static int8_t</type>
+      <type>static uint8_t</type>
       <name>GetTypeFromBuffer</name>
       <anchorfile>classlibbgp_1_1BgpPathAttrib.html</anchorfile>
-      <anchor>a6968805e605546d99c02dbbd59feb2e9</anchor>
+      <anchor>a4cc071cd3066463cba1070b0f17216c3</anchor>
       <arglist>(const uint8_t *buffer, size_t buffer_sz)</arglist>
     </member>
     <member kind="variable">
@@ -1907,10 +2370,10 @@
       <arglist>() const</arglist>
     </member>
     <member kind="variable">
-      <type>uint32_t</type>
-      <name>community</name>
+      <type>std::vector&lt; uint32_t &gt;</type>
+      <name>communites</name>
       <anchorfile>classlibbgp_1_1BgpPathAttribCommunity.html</anchorfile>
-      <anchor>a191511942337973ff77d4f1fa5632d17</anchor>
+      <anchor>a617b01836f153e7be395f80bd7a3ae5e</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -2023,6 +2486,185 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>libbgp::BgpPathAttribMpNlriBase</name>
+    <filename>classlibbgp_1_1BgpPathAttribMpNlriBase.html</filename>
+    <base>libbgp::BgpPathAttrib</base>
+    <member kind="variable">
+      <type>uint16_t</type>
+      <name>afi</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpNlriBase.html</anchorfile>
+      <anchor>adf8922944da6ae5b7e509a8c5bc93cc7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint8_t</type>
+      <name>safi</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpNlriBase.html</anchorfile>
+      <anchor>a60b2ea2cb3d42e3eb805177422a94899</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpPathAttribMpReachNlriIpv6</name>
+    <filename>classlibbgp_1_1BgpPathAttribMpReachNlriIpv6.html</filename>
+    <base>libbgp::BgpPathAttribMpNlriBase</base>
+    <member kind="function">
+      <type>BgpPathAttrib *</type>
+      <name>clone</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpReachNlriIpv6.html</anchorfile>
+      <anchor>a5ca939a285a3d9d9cf109891200d80ed</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>parse</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpReachNlriIpv6.html</anchorfile>
+      <anchor>acd5b1b153eaf019a0f8b793318b56c6e</anchor>
+      <arglist>(const uint8_t *buffer, size_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>write</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpReachNlriIpv6.html</anchorfile>
+      <anchor>ab6555b8dab2c737299135287b440f6cb</anchor>
+      <arglist>(uint8_t *buffer, size_t buffer_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>doPrint</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpReachNlriIpv6.html</anchorfile>
+      <anchor>afaf967bd934f96c975e4002f6aa8cce5</anchor>
+      <arglist>(size_t indent, uint8_t **to, size_t *buf_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>length</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpReachNlriIpv6.html</anchorfile>
+      <anchor>acf278c412ab5a88882f3c945ed33f128</anchor>
+      <arglist>() const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpPathAttribMpReachNlriUnknow</name>
+    <filename>classlibbgp_1_1BgpPathAttribMpReachNlriUnknow.html</filename>
+    <base>libbgp::BgpPathAttribMpNlriBase</base>
+    <member kind="function">
+      <type>BgpPathAttrib *</type>
+      <name>clone</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpReachNlriUnknow.html</anchorfile>
+      <anchor>a070c200c3b2f7c3ac5a5561080074e76</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>parse</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpReachNlriUnknow.html</anchorfile>
+      <anchor>aeb90e558df2b2c9e7345d4b979ce9b5b</anchor>
+      <arglist>(const uint8_t *buffer, size_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>write</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpReachNlriUnknow.html</anchorfile>
+      <anchor>a3e229edcf8218596fef7b3409b2ca6da</anchor>
+      <arglist>(uint8_t *buffer, size_t buffer_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>doPrint</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpReachNlriUnknow.html</anchorfile>
+      <anchor>acd6954fc52a2cf97f2ee34bd7c5ba3ba</anchor>
+      <arglist>(size_t indent, uint8_t **to, size_t *buf_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>length</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpReachNlriUnknow.html</anchorfile>
+      <anchor>a7d8ba86100a6cf2522e3baf697359016</anchor>
+      <arglist>() const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpPathAttribMpUnreachNlriIpv6</name>
+    <filename>classlibbgp_1_1BgpPathAttribMpUnreachNlriIpv6.html</filename>
+    <base>libbgp::BgpPathAttribMpNlriBase</base>
+    <member kind="function">
+      <type>BgpPathAttrib *</type>
+      <name>clone</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpUnreachNlriIpv6.html</anchorfile>
+      <anchor>adadaeec5736c8f0ff7775ec8d80346b3</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>parse</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpUnreachNlriIpv6.html</anchorfile>
+      <anchor>a0894ac8422ca2518aa6ef10750b371b5</anchor>
+      <arglist>(const uint8_t *buffer, size_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>write</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpUnreachNlriIpv6.html</anchorfile>
+      <anchor>a12a012e5f6f70bafd12702756afdbc11</anchor>
+      <arglist>(uint8_t *buffer, size_t buffer_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>doPrint</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpUnreachNlriIpv6.html</anchorfile>
+      <anchor>a73053d15e75bbc5d21fca138e60a254a</anchor>
+      <arglist>(size_t indent, uint8_t **to, size_t *buf_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>length</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpUnreachNlriIpv6.html</anchorfile>
+      <anchor>a460bb6907a56653929240a4ddfe04426</anchor>
+      <arglist>() const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpPathAttribMpUnreachNlriUnknow</name>
+    <filename>classlibbgp_1_1BgpPathAttribMpUnreachNlriUnknow.html</filename>
+    <base>libbgp::BgpPathAttribMpNlriBase</base>
+    <member kind="function">
+      <type>BgpPathAttrib *</type>
+      <name>clone</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpUnreachNlriUnknow.html</anchorfile>
+      <anchor>a7da5568da49b83f767edf4bd446b7095</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>parse</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpUnreachNlriUnknow.html</anchorfile>
+      <anchor>af8520144910c5769ddec5387a7328e87</anchor>
+      <arglist>(const uint8_t *buffer, size_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>write</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpUnreachNlriUnknow.html</anchorfile>
+      <anchor>a03ff8b2335d35c92de07661bdd2f0105</anchor>
+      <arglist>(uint8_t *buffer, size_t buffer_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>doPrint</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpUnreachNlriUnknow.html</anchorfile>
+      <anchor>a39f2f3b501d3907aa5376e2a905399a7</anchor>
+      <arglist>(size_t indent, uint8_t **to, size_t *buf_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>length</name>
+      <anchorfile>classlibbgp_1_1BgpPathAttribMpUnreachNlriUnknow.html</anchorfile>
+      <anchor>a84df486b45e90b86d75b7b2a3151808d</anchor>
+      <arglist>() const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
     <name>libbgp::BgpPathAttribNexthop</name>
     <filename>classlibbgp_1_1BgpPathAttribNexthop.html</filename>
     <base>libbgp::BgpPathAttrib</base>
@@ -2126,127 +2768,417 @@
   <compound kind="class">
     <name>libbgp::BgpRib</name>
     <filename>classlibbgp_1_1BgpRib.html</filename>
+    <templarg>T</templarg>
+    <member kind="function" protection="protected" static="yes">
+      <type>static const T *</type>
+      <name>selectEntry</name>
+      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
+      <anchor>a7de428e99144e8653ce8ea85bbfeb51d</anchor>
+      <arglist>(const T *a, const T *b)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpRib4</name>
+    <filename>classlibbgp_1_1BgpRib4.html</filename>
+    <base protection="private">BgpRib&lt; BgpRib4Entry &gt;</base>
     <member kind="function">
       <type></type>
-      <name>BgpRib</name>
-      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
-      <anchor>a7999871f2dd7eb8ea2c7fceb0e619238</anchor>
+      <name>BgpRib4</name>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>ad88d4dee2a0072ac8864f671a148fee9</anchor>
       <arglist>(BgpLogHandler *logger)</arglist>
     </member>
     <member kind="function">
-      <type>const BgpRibEntry *</type>
+      <type>const BgpRib4Entry *</type>
       <name>insert</name>
-      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
-      <anchor>a051c31d60149506a07495cbe9a10a6a8</anchor>
-      <arglist>(BgpLogHandler *logger, const Route &amp;route, uint32_t nexthop)</arglist>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>a2a0493530a85e4ca0254bfd5c59748d2</anchor>
+      <arglist>(BgpLogHandler *logger, const Prefix4 &amp;route, uint32_t nexthop, int32_t weight=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>const BgpRib4Entry *</type>
+      <name>insert</name>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>afca6a5543e5183036009a7942ab24a94</anchor>
+      <arglist>(BgpLogHandler *logger, const Prefix4 &amp;route, uint32_t nexthop, RouteEventBus *rev_bus, int32_t weight=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::vector&lt; BgpRib4Entry &gt;</type>
+      <name>insert</name>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>a8854134f3e2020b387a3062463605c93</anchor>
+      <arglist>(BgpLogHandler *logger, const std::vector&lt; Prefix4 &gt; &amp;routes, uint32_t nexthop, int32_t weight=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::vector&lt; BgpRib4Entry &gt;</type>
+      <name>insert</name>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>a61fb3b159815ef38b87c94d3a57e90e1</anchor>
+      <arglist>(BgpLogHandler *logger, const std::vector&lt; Prefix4 &gt; &amp;routes, uint32_t nexthop, RouteEventBus *rev_bus, int32_t weight=0)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>insert</name>
-      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
-      <anchor>af2d1adc62bceed8ff93d3465d0ce2cc2</anchor>
-      <arglist>(uint32_t src_router_id, const Route &amp;route, const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; &amp;attrib)</arglist>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>af897bd542daa66c299507239d52f276a</anchor>
+      <arglist>(uint32_t src_router_id, const Prefix4 &amp;route, const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; &amp;attrib, int32_t weight)</arglist>
     </member>
     <member kind="function">
       <type>ssize_t</type>
       <name>insert</name>
-      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
-      <anchor>a23be773eb45fd56b3463ffb1efc55058</anchor>
-      <arglist>(uint32_t src_router_id, const std::vector&lt; Route &gt; &amp;routes, const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; &amp;attrib)</arglist>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>a2ad45030789a13776f4f74c73750dd11</anchor>
+      <arglist>(uint32_t src_router_id, const std::vector&lt; Prefix4 &gt; &amp;routes, const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; &amp;attrib, int32_t weight)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>withdraw</name>
-      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
-      <anchor>a70783157aeccf693ea1bf7300b6a0280</anchor>
-      <arglist>(uint32_t src_router_id, const Route &amp;route)</arglist>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>a965f58f55161c73dfe81ea6f10505b31</anchor>
+      <arglist>(uint32_t src_router_id, const Prefix4 &amp;route)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>withdraw</name>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>a405aea0046696f0b3ca03ff85131ca77</anchor>
+      <arglist>(uint32_t src_router_id, const Prefix4 &amp;route, RouteEventBus *rev_bus)</arglist>
     </member>
     <member kind="function">
       <type>ssize_t</type>
       <name>withdraw</name>
-      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
-      <anchor>a0ebb5ea35902abd8de63dba9126e2b31</anchor>
-      <arglist>(uint32_t src_router_id, const std::vector&lt; Route &gt; &amp;routes)</arglist>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>a40fc76532e0f0add2e595325f4d57267</anchor>
+      <arglist>(uint32_t src_router_id, const std::vector&lt; Prefix4 &gt; &amp;routes)</arglist>
     </member>
     <member kind="function">
-      <type>std::vector&lt; Route &gt;</type>
+      <type>ssize_t</type>
+      <name>withdraw</name>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>ad3f26654c3628c1b9e74bd7da7678b3a</anchor>
+      <arglist>(uint32_t src_router_id, const std::vector&lt; Prefix4 &gt; &amp;routes, RouteEventBus *rev_bus)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; Prefix4 &gt;</type>
       <name>discard</name>
-      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
-      <anchor>a0becda05fc430c8c63c6c54256e1535c</anchor>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>afbc39248020e25cb8ee12605c873e72e</anchor>
       <arglist>(uint32_t src_router_id)</arglist>
     </member>
     <member kind="function">
-      <type>const BgpRibEntry *</type>
+      <type>const BgpRib4Entry *</type>
       <name>lookup</name>
-      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
-      <anchor>a54a07e487293cb819813636b324bf3b4</anchor>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>ad6a73acf7660de343ecded38e29c9b12</anchor>
       <arglist>(uint32_t dest) const</arglist>
     </member>
     <member kind="function">
-      <type>const BgpRibEntry *</type>
+      <type>const BgpRib4Entry *</type>
       <name>lookup</name>
-      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
-      <anchor>a12e9f219a8a9aa8ab8f4c88f709181e7</anchor>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>a37a69152eb842ca584970e9ff1364e81</anchor>
       <arglist>(uint32_t src_router_id, uint32_t dest) const</arglist>
     </member>
     <member kind="function">
-      <type>const std::vector&lt; BgpRibEntry &gt; &amp;</type>
+      <type>const std::vector&lt; BgpRib4Entry &gt; &amp;</type>
       <name>get</name>
-      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
-      <anchor>ae7c3aa25cca4b67acd7f36b2d6925064</anchor>
+      <anchorfile>classlibbgp_1_1BgpRib4.html</anchorfile>
+      <anchor>a79850059f65098fa4506d3679cdec885</anchor>
       <arglist>() const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpRib4Entry</name>
+    <filename>classlibbgp_1_1BgpRib4Entry.html</filename>
+    <base>BgpRibEntry&lt; BgpRib4Entry &gt;</base>
+    <member kind="function">
+      <type></type>
+      <name>BgpRib4Entry</name>
+      <anchorfile>classlibbgp_1_1BgpRib4Entry.html</anchorfile>
+      <anchor>a3c36b50e9bdbe9e3f7cfb2065e77004d</anchor>
+      <arglist>(Prefix4 r, uint32_t src, const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; attribs)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32_t</type>
+      <name>getNexthop</name>
+      <anchorfile>classlibbgp_1_1BgpRib4Entry.html</anchorfile>
+      <anchor>af03570507fafb4f9ee64b2d2e275c7e2</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="variable">
+      <type>Prefix4</type>
+      <name>route</name>
+      <anchorfile>classlibbgp_1_1BgpRib4Entry.html</anchorfile>
+      <anchor>a794748f7a2c4fa9c69146e64932f0034</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpRib6</name>
+    <filename>classlibbgp_1_1BgpRib6.html</filename>
+    <base protection="private">BgpRib&lt; BgpRib6Entry &gt;</base>
+    <member kind="function">
+      <type></type>
+      <name>BgpRib6</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>a6fcab2dadb7a4723d5934b5df282b69f</anchor>
+      <arglist>(BgpLogHandler *logger)</arglist>
+    </member>
+    <member kind="function">
+      <type>const BgpRib6Entry *</type>
+      <name>insert</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>a44aca85058b1b6b5120d71552cf524c9</anchor>
+      <arglist>(BgpLogHandler *logger, const Prefix6 &amp;route, const uint8_t nexthop_global[16], const uint8_t nexthop_linklocal[16], int32_t weight=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>const BgpRib6Entry *</type>
+      <name>insert</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>ad6138f4ce110fba0c78a7ccfc220a4d1</anchor>
+      <arglist>(BgpLogHandler *logger, const Prefix6 &amp;route, const uint8_t nexthop_global[16], const uint8_t nexthop_linklocal[16], RouteEventBus *rev_bus, int32_t weight=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::vector&lt; BgpRib6Entry &gt;</type>
+      <name>insert</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>a196ffdd62d2af964783ad199dec13b63</anchor>
+      <arglist>(BgpLogHandler *logger, const std::vector&lt; Prefix6 &gt; &amp;routes, const uint8_t nexthop_global[16], const uint8_t nexthop_linklocal[16], int32_t weight=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::vector&lt; BgpRib6Entry &gt;</type>
+      <name>insert</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>af17caf324edf4009ec2111064ae4d1f6</anchor>
+      <arglist>(BgpLogHandler *logger, const std::vector&lt; Prefix6 &gt; &amp;routes, const uint8_t nexthop_global[16], const uint8_t nexthop_linklocal[16], RouteEventBus *rev_bus, int32_t weight=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>insert</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>a1d556b7a174d55a7973d774e281cc2da</anchor>
+      <arglist>(uint32_t src_router_id, const Prefix6 &amp;route, const uint8_t nexthop_global[16], const uint8_t nexthop_linklocal[16], const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; &amp;attrib, int32_t weight)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>insert</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>a80033d2bed4cdc9e27c202d68d1b86ad</anchor>
+      <arglist>(uint32_t src_router_id, const std::vector&lt; Prefix6 &gt; &amp;routes, const uint8_t nexthop_global[16], const uint8_t nexthop_linklocal[16], const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; &amp;attrib, int32_t weight)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>withdraw</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>ae736541ca97f87ca50b4abe213611179</anchor>
+      <arglist>(uint32_t src_router_id, const Prefix6 &amp;route)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>withdraw</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>a24dcc2421339b1a1c400799dc33828ab</anchor>
+      <arglist>(uint32_t src_router_id, const std::vector&lt; Prefix6 &gt; &amp;routes)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; Prefix6 &gt;</type>
+      <name>discard</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>a5697a1d80f91500c339c2942dd388156</anchor>
+      <arglist>(uint32_t src_router_id)</arglist>
+    </member>
+    <member kind="function">
+      <type>const BgpRib6Entry *</type>
+      <name>lookup</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>a2963c24cf5798f021a5d0a544d4c1eb0</anchor>
+      <arglist>(const uint8_t dest[16]) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const BgpRib6Entry *</type>
+      <name>lookup</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>a9617dde24cd888e23c7aae988fa98299</anchor>
+      <arglist>(uint32_t src_router_id, const uint8_t dest[16]) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::vector&lt; BgpRib6Entry &gt; &amp;</type>
+      <name>get</name>
+      <anchorfile>classlibbgp_1_1BgpRib6.html</anchorfile>
+      <anchor>af0c2d60113717f4884c7e46fb9de9535</anchor>
+      <arglist>() const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::BgpRib6Entry</name>
+    <filename>classlibbgp_1_1BgpRib6Entry.html</filename>
+    <base>BgpRibEntry&lt; BgpRib6Entry &gt;</base>
+    <member kind="function">
+      <type></type>
+      <name>BgpRib6Entry</name>
+      <anchorfile>classlibbgp_1_1BgpRib6Entry.html</anchorfile>
+      <anchor>ac5198cc777526017265cc57dc4704543</anchor>
+      <arglist>(Prefix6 r, uint32_t src, const uint8_t nexthop_global[16], const uint8_t nexthop_linklocal[16], const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; attribs)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Prefix6</type>
+      <name>route</name>
+      <anchorfile>classlibbgp_1_1BgpRib6Entry.html</anchorfile>
+      <anchor>a75c1817f59af0a62b1646e1214a84cbb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint8_t</type>
+      <name>nexthop_global</name>
+      <anchorfile>classlibbgp_1_1BgpRib6Entry.html</anchorfile>
+      <anchor>a542e72d5223d620a1084baa77de62adf</anchor>
+      <arglist>[16]</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint8_t</type>
+      <name>nexthop_linklocal</name>
+      <anchorfile>classlibbgp_1_1BgpRib6Entry.html</anchorfile>
+      <anchor>a7a9ab047cccf1bb88fb02fee23e41c56</anchor>
+      <arglist>[16]</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>BgpRib&lt; BgpRib4Entry &gt;</name>
+    <filename>classlibbgp_1_1BgpRib.html</filename>
+    <member kind="function" protection="protected" static="yes">
+      <type>static const BgpRib4Entry *</type>
+      <name>selectEntry</name>
+      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
+      <anchor>a7de428e99144e8653ce8ea85bbfeb51d</anchor>
+      <arglist>(const BgpRib4Entry *a, const BgpRib4Entry *b)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>BgpRib&lt; BgpRib6Entry &gt;</name>
+    <filename>classlibbgp_1_1BgpRib.html</filename>
+    <member kind="function" protection="protected" static="yes">
+      <type>static const BgpRib6Entry *</type>
+      <name>selectEntry</name>
+      <anchorfile>classlibbgp_1_1BgpRib.html</anchorfile>
+      <anchor>a7de428e99144e8653ce8ea85bbfeb51d</anchor>
+      <arglist>(const BgpRib6Entry *a, const BgpRib6Entry *b)</arglist>
     </member>
   </compound>
   <compound kind="class">
     <name>libbgp::BgpRibEntry</name>
     <filename>classlibbgp_1_1BgpRibEntry.html</filename>
+    <templarg>T</templarg>
     <member kind="function">
-      <type></type>
-      <name>BgpRibEntry</name>
+      <type>bool</type>
+      <name>operator&gt;</name>
       <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
-      <anchor>a64f7a285ed2055af8d69cbf21ab99a73</anchor>
-      <arglist>(Route r, uint32_t src, const std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt;&gt; attribs)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>getMetric</name>
-      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
-      <anchor>adf29a93022773fb5b920ecb4a335c58c</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>getNexthop</name>
-      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
-      <anchor>a2f8b87b84edbddea08afa4452e4d7f6f</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="variable">
-      <type>Route</type>
-      <name>route</name>
-      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
-      <anchor>adf15885aace5c747eabceb95cb5b458a</anchor>
-      <arglist></arglist>
+      <anchor>acee75ead8e7fdc9e17d7584ed0958db3</anchor>
+      <arglist>(const T &amp;other) const</arglist>
     </member>
     <member kind="variable">
       <type>uint32_t</type>
       <name>src_router_id</name>
       <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
-      <anchor>a371b0f13709f9ef05b0184b8d0dfb9d4</anchor>
+      <anchor>a4fe32489231c3e84cbffd205c7be75cf</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>uint64_t</type>
       <name>update_id</name>
       <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
-      <anchor>a53181be39e7e627df825be8ac5958bbf</anchor>
+      <anchor>a488f3f6505d949b83c39e78b166aa446</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int32_t</type>
+      <name>weight</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>a08966de6cb5a1996eb2062f4e398b69f</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt; &gt;</type>
       <name>attribs</name>
       <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
-      <anchor>a4a16bb9f1f335019907ad924b3296087</anchor>
+      <anchor>a9a3d9a86bd70cc7f4cc98c58fda6f159</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>BgpRibEntry&lt; BgpRib4Entry &gt;</name>
+    <filename>classlibbgp_1_1BgpRibEntry.html</filename>
+    <member kind="function">
+      <type>bool</type>
+      <name>operator&gt;</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>acee75ead8e7fdc9e17d7584ed0958db3</anchor>
+      <arglist>(const BgpRib4Entry &amp;other) const</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32_t</type>
+      <name>src_router_id</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>a4fe32489231c3e84cbffd205c7be75cf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64_t</type>
+      <name>update_id</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>a488f3f6505d949b83c39e78b166aa446</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int32_t</type>
+      <name>weight</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>a08966de6cb5a1996eb2062f4e398b69f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt; &gt;</type>
+      <name>attribs</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>a9a3d9a86bd70cc7f4cc98c58fda6f159</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>BgpRibEntry&lt; BgpRib6Entry &gt;</name>
+    <filename>classlibbgp_1_1BgpRibEntry.html</filename>
+    <member kind="function">
+      <type>bool</type>
+      <name>operator&gt;</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>acee75ead8e7fdc9e17d7584ed0958db3</anchor>
+      <arglist>(const BgpRib6Entry &amp;other) const</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32_t</type>
+      <name>src_router_id</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>a4fe32489231c3e84cbffd205c7be75cf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64_t</type>
+      <name>update_id</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>a488f3f6505d949b83c39e78b166aa446</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int32_t</type>
+      <name>weight</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>a08966de6cb5a1996eb2062f4e398b69f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt; &gt;</type>
+      <name>attribs</name>
+      <anchorfile>classlibbgp_1_1BgpRibEntry.html</anchorfile>
+      <anchor>a9a3d9a86bd70cc7f4cc98c58fda6f159</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -2257,8 +3189,8 @@
       <type></type>
       <name>BgpSink</name>
       <anchorfile>classlibbgp_1_1BgpSink.html</anchorfile>
-      <anchor>a377746517e6a7457d0a8ff392a056b3e</anchor>
-      <arglist>(bool use_4b_asn, size_t buffer_size)</arglist>
+      <anchor>af6f59eb30ff7ca7c3432e98867b7d8cb</anchor>
+      <arglist>(bool use_4b_asn)</arglist>
     </member>
     <member kind="function">
       <type>ssize_t</type>
@@ -2414,45 +3346,45 @@
     </member>
     <member kind="function">
       <type>bool</type>
-      <name>setWithdrawn</name>
+      <name>setWithdrawn4</name>
       <anchorfile>classlibbgp_1_1BgpUpdateMessage.html</anchorfile>
-      <anchor>a354fdcbe07ac8ff2914a6d3a44d2b5ee</anchor>
-      <arglist>(const std::vector&lt; Route &gt; &amp;routes)</arglist>
+      <anchor>a57f3220e615ad5f23f6e630ac29db85d</anchor>
+      <arglist>(const std::vector&lt; Prefix4 &gt; &amp;routes)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
-      <name>addWithdrawn</name>
+      <name>addWithdrawn4</name>
       <anchorfile>classlibbgp_1_1BgpUpdateMessage.html</anchorfile>
-      <anchor>a0209423df4f2f04484561addeddf49e7</anchor>
+      <anchor>a55a02491221b959078514371a89ba6ac</anchor>
       <arglist>(uint32_t prefix, uint8_t length)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
-      <name>addWithdrawn</name>
+      <name>addWithdrawn4</name>
       <anchorfile>classlibbgp_1_1BgpUpdateMessage.html</anchorfile>
-      <anchor>aaf8cae16172cad7440f9a3c815ebf54c</anchor>
-      <arglist>(const Route &amp;route)</arglist>
+      <anchor>af3e17f9c3760be4ec89bf1e1d8dd9d4f</anchor>
+      <arglist>(const Prefix4 &amp;route)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
-      <name>setNlri</name>
+      <name>setNlri4</name>
       <anchorfile>classlibbgp_1_1BgpUpdateMessage.html</anchorfile>
-      <anchor>a94e7cf3186a733109fec5c95a2e105a0</anchor>
-      <arglist>(const std::vector&lt; Route &gt; &amp;routes)</arglist>
+      <anchor>a8e45e1f6fa0e7a1215a5d36d0ba032c3</anchor>
+      <arglist>(const std::vector&lt; Prefix4 &gt; &amp;routes)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
-      <name>addNlri</name>
+      <name>addNlri4</name>
       <anchorfile>classlibbgp_1_1BgpUpdateMessage.html</anchorfile>
-      <anchor>a0a114edba4964ea26bd2286b44c99070</anchor>
+      <anchor>a08fc92a99ee403372871b9de1107ef9f</anchor>
       <arglist>(uint32_t prefix, uint8_t length)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
-      <name>addNlri</name>
+      <name>addNlri4</name>
       <anchorfile>classlibbgp_1_1BgpUpdateMessage.html</anchorfile>
-      <anchor>a26deec4c54b2b600b1e414645ea319dd</anchor>
-      <arglist>(const Route &amp;route)</arglist>
+      <anchor>aa988c6d5e8d960726d42b5c729afcfd5</anchor>
+      <arglist>(const Prefix4 &amp;route)</arglist>
     </member>
     <member kind="function">
       <type>ssize_t</type>
@@ -2506,6 +3438,312 @@
       <arglist>(const uint8_t *buffer, size_t length)</arglist>
     </member>
   </compound>
+  <compound kind="struct">
+    <name>std::hash&lt; std::tuple&lt; TT... &gt; &gt;</name>
+    <filename>structstd_1_1hash_3_01std_1_1tuple_3_01TT_8_8_8_01_4_01_4.html</filename>
+    <templarg>TT</templarg>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::Prefix</name>
+    <filename>classlibbgp_1_1Prefix.html</filename>
+    <member kind="function" virtualness="pure">
+      <type>virtual ssize_t</type>
+      <name>parse</name>
+      <anchorfile>classlibbgp_1_1Prefix.html</anchorfile>
+      <anchor>acf2ee6803ebce418c697430cfc046232</anchor>
+      <arglist>(const uint8_t *buffer, size_t buf_sz)=0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual ssize_t</type>
+      <name>write</name>
+      <anchorfile>classlibbgp_1_1Prefix.html</anchorfile>
+      <anchor>ab21592d21342cce91c31da809ce0d423</anchor>
+      <arglist>(uint8_t *buffer, size_t buf_sz) const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix.html</anchorfile>
+      <anchor>a61ac0db68a4a18d9134a3b0772dc3aa4</anchor>
+      <arglist>(const Prefix &amp;other) const =0</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::Prefix4</name>
+    <filename>classlibbgp_1_1Prefix4.html</filename>
+    <base>libbgp::Prefix</base>
+    <member kind="function">
+      <type></type>
+      <name>Prefix4</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>af1fade993c9763361317543e8d5abb0a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Prefix4</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>af7244ae9d1612869703dcb7673cc5c7d</anchor>
+      <arglist>(uint32_t prefix, uint8_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Prefix4</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>ad3ca6b48c1fa2c42f2a194d73790a385</anchor>
+      <arglist>(const char *prefix, uint8_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>parse</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>a7af1a33736bd89b5f01cb24ec032799d</anchor>
+      <arglist>(const uint8_t *buffer, size_t buf_sz)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>write</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>ae186605d9fc1b40330c8f8bf58665a51</anchor>
+      <arglist>(uint8_t *buffer, size_t buf_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>a6b8c14a998e20b0ab557ab834734d880</anchor>
+      <arglist>(uint32_t address) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>ac0bce62f079adef51ccbd2cd499163f5</anchor>
+      <arglist>(const char *address) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>af8d7bc2e299b5345d3e9c3b0f7257358</anchor>
+      <arglist>(const Prefix &amp;other) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>a76278a0da2a763790188b8341f710abe</anchor>
+      <arglist>(uint32_t prefix, uint8_t length) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>ab04cd4333e175b86de3ab2039d458923</anchor>
+      <arglist>(const char *prefix, uint8_t length) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>operator==</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>ac347d45af10322846a877d25e56831df</anchor>
+      <arglist>(const Prefix &amp;other) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>set</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>add0ddaaf3b2b1802e5e0b172549a1d83</anchor>
+      <arglist>(uint32_t prefix, uint8_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>setPrefix</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>a59936ec1ad1b50be588ea1a3d910a593</anchor>
+      <arglist>(uint32_t prefix)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>setLength</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>a3b16ce242bd2c2cd438899c922c63fa9</anchor>
+      <arglist>(uint8_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32_t</type>
+      <name>getPrefix</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>ac3e173c54a8d25861f6a83709185d69c</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>uint8_t</type>
+      <name>getLength</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>ad4842f5b23e4e729d82715badb5d22b8</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32_t</type>
+      <name>getMask</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>a17753f7a3e0e48fb56eb20f9db5c13b1</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static bool</type>
+      <name>Includes</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>a642453d2ef6a27f54b9deab6655c6f29</anchor>
+      <arglist>(uint32_t prefix, uint8_t length, uint32_t address)</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static bool</type>
+      <name>Includes</name>
+      <anchorfile>classlibbgp_1_1Prefix4.html</anchorfile>
+      <anchor>a54acfa174882e5af4bc4438931638a1f</anchor>
+      <arglist>(uint32_t prefix_a, uint8_t length_a, uint32_t prefix_b, uint8_t length_b)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::Prefix6</name>
+    <filename>classlibbgp_1_1Prefix6.html</filename>
+    <base>libbgp::Prefix</base>
+    <member kind="function">
+      <type></type>
+      <name>Prefix6</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>ae7ddd6e750f1d1da43bff3c94c2e8d47</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Prefix6</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>a8aa2824b460b8c74eb37d4f4083b8778</anchor>
+      <arglist>(const uint8_t prefix[16], uint8_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Prefix6</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>ad36d62dca83eae0be64205307a4fbab4</anchor>
+      <arglist>(const char *prefix, uint8_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>parse</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>a3e81f31ba7fa22daaad5218f2f0ba6ee</anchor>
+      <arglist>(const uint8_t *buffer, size_t buf_sz)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize_t</type>
+      <name>write</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>a6c4877cece3800aaf2907c25ff96168d</anchor>
+      <arglist>(uint8_t *buffer, size_t buf_sz) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>ac01cb007dcef25a8f33e706ee4e6988b</anchor>
+      <arglist>(const uint8_t address[16]) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>a801e45f9c4507859020e53e22676bab1</anchor>
+      <arglist>(const char *address) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>a616992635705e805e5ea6635c87fe737</anchor>
+      <arglist>(const Prefix &amp;other) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>ae0bcb89fe6bc7f3d61089cfdee9aa54c</anchor>
+      <arglist>(const uint8_t prefix[16], uint8_t length) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>includes</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>a9c39a78b1beeca9c7baab6e440dc9327</anchor>
+      <arglist>(const char *prefix, uint8_t length) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>operator==</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>aeb8401d66621a5a7f1a1721b69a90456</anchor>
+      <arglist>(const Prefix &amp;other) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>set</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>ade96e315abe476a413ca7c61c50a40ad</anchor>
+      <arglist>(const uint8_t prefix[16], uint8_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>setPrefix</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>abbfa7589291f7a80abdcbdfa66e3abeb</anchor>
+      <arglist>(const uint8_t prefix[16])</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>setLength</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>ac6ebc68e3590bd6fb41e716bf61fd7b4</anchor>
+      <arglist>(uint8_t length)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getPrefix</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>af880a0b11a8cf75b24dd9733a7249a17</anchor>
+      <arglist>(uint8_t prefix[16]) const</arglist>
+    </member>
+    <member kind="function">
+      <type>uint8_t</type>
+      <name>getLength</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>a92a5ef717e04060522463ca56b1f240f</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getMask</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>af98b54b812a42b9cde3800a5d1bd6c2f</anchor>
+      <arglist>(uint8_t mask[16]) const</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static bool</type>
+      <name>Includes</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>ab3863006c6f0b72eee13e162d61560ac</anchor>
+      <arglist>(const uint8_t prefix[16], uint8_t length, const uint8_t address[16])</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static bool</type>
+      <name>Includes</name>
+      <anchorfile>classlibbgp_1_1Prefix6.html</anchorfile>
+      <anchor>a599da4ae6c035ed1fe7ee5f89497fd85</anchor>
+      <arglist>(const uint8_t prefix_a[16], uint8_t length_a, const uint8_t prefix_b[16], uint8_t length_b)</arglist>
+    </member>
+  </compound>
   <compound kind="class">
     <name>libbgp::RealtimeClock</name>
     <filename>classlibbgp_1_1RealtimeClock.html</filename>
@@ -2519,130 +3757,64 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>libbgp::Route</name>
-    <filename>classlibbgp_1_1Route.html</filename>
-    <member kind="function">
-      <type></type>
-      <name>Route</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>a1217ccf5b6ecb36ebfc85b16962c4296</anchor>
-      <arglist>(uint32_t prefix, uint8_t length)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>Route</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>a0e860c1cc2a4c2ebaddaee58f56755c5</anchor>
-      <arglist>(const char *prefix, uint8_t length)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>includes</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>a7d2e21fa95731f2c8e35ffdbb5678d41</anchor>
-      <arglist>(uint32_t address) const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>includes</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>afb8211eead6b73450fb1c0b458b6ee34</anchor>
-      <arglist>(const char *address) const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>includes</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>a3ec09421c6b9b704c610de81e4432707</anchor>
-      <arglist>(const Route &amp;other) const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>includes</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>a4a81a9a5a67117de01a07991ee62d6e6</anchor>
-      <arglist>(uint32_t prefix, uint8_t length) const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>includes</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>afdfa66d57d1c323f9497994556e5cdf1</anchor>
-      <arglist>(const char *prefix, uint8_t length) const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>operator==</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>af40cad70c2744a334d474bad4d23fc65</anchor>
-      <arglist>(const Route &amp;other) const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>setPrefix</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>a0a58f03241cbf074b66deee4add06813</anchor>
-      <arglist>(uint32_t prefix)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>setLength</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>a4bf42048e6b6bc2ecc5d9ed965acddac</anchor>
-      <arglist>(uint8_t length)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>getPrefix</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>a55d050e216521dc5459273efe672b9ff</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint8_t</type>
-      <name>getLength</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>ad8cada2027326f6fc06ddb6a08914462</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>getMask</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>a69dcb2c2cf93cbfdd0eede6ac33311b0</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function" static="yes">
-      <type>static bool</type>
-      <name>Includes</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>a0b8f3b7e3dd9b49cbf108a60aa4b069a</anchor>
-      <arglist>(uint32_t prefix, uint8_t length, uint32_t address)</arglist>
-    </member>
-    <member kind="function" static="yes">
-      <type>static bool</type>
-      <name>Includes</name>
-      <anchorfile>classlibbgp_1_1Route.html</anchorfile>
-      <anchor>acc1540cc5645ea8d67397ffd391abc58</anchor>
-      <arglist>(uint32_t prefix_a, uint8_t length_a, uint32_t prefix_b, uint8_t length_b)</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>libbgp::RouteAddEvent</name>
-    <filename>classlibbgp_1_1RouteAddEvent.html</filename>
+    <name>libbgp::Route4AddEvent</name>
+    <filename>classlibbgp_1_1Route4AddEvent.html</filename>
     <base>libbgp::RouteEvent</base>
     <member kind="variable">
       <type>std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt; &gt;</type>
       <name>attribs</name>
-      <anchorfile>classlibbgp_1_1RouteAddEvent.html</anchorfile>
-      <anchor>aaff7b8bf5c298d5c538dbfdc235bbbba</anchor>
+      <anchorfile>classlibbgp_1_1Route4AddEvent.html</anchorfile>
+      <anchor>a791bed462f59f3e3e0c6639da55d8e05</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>std::vector&lt; Route &gt;</type>
+      <type>std::vector&lt; Prefix4 &gt;</type>
       <name>routes</name>
-      <anchorfile>classlibbgp_1_1RouteAddEvent.html</anchorfile>
-      <anchor>a0d94b0e261921f2a8b494babc4e76193</anchor>
+      <anchorfile>classlibbgp_1_1Route4AddEvent.html</anchorfile>
+      <anchor>a5f8a29430123e0000f6b64560e20d68f</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::Route4WithdrawEvent</name>
+    <filename>classlibbgp_1_1Route4WithdrawEvent.html</filename>
+    <base>libbgp::RouteEvent</base>
+    <member kind="variable">
+      <type>std::vector&lt; Prefix4 &gt;</type>
+      <name>routes</name>
+      <anchorfile>classlibbgp_1_1Route4WithdrawEvent.html</anchorfile>
+      <anchor>a8e065e94df550d81287c0f74f87304a0</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::Route6AddEvent</name>
+    <filename>classlibbgp_1_1Route6AddEvent.html</filename>
+    <base>libbgp::RouteEvent</base>
+    <member kind="variable">
+      <type>std::vector&lt; std::shared_ptr&lt; BgpPathAttrib &gt; &gt;</type>
+      <name>attribs</name>
+      <anchorfile>classlibbgp_1_1Route6AddEvent.html</anchorfile>
+      <anchor>acd004019bdab776398fe85fbf6942dbe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::vector&lt; Prefix6 &gt;</type>
+      <name>routes</name>
+      <anchorfile>classlibbgp_1_1Route6AddEvent.html</anchorfile>
+      <anchor>a599e85674c082bb3b5e010876335e310</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>libbgp::Route6WithdrawEvent</name>
+    <filename>classlibbgp_1_1Route6WithdrawEvent.html</filename>
+    <base>libbgp::RouteEvent</base>
+    <member kind="variable">
+      <type>std::vector&lt; Prefix6 &gt;</type>
+      <name>routes</name>
+      <anchorfile>classlibbgp_1_1Route6WithdrawEvent.html</anchorfile>
+      <anchor>a5bfdc1adc2fdf8e85e709a4e6cdcdbe9</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -2696,18 +3868,6 @@
       <anchorfile>classlibbgp_1_1RouteEventReceiver.html</anchorfile>
       <anchor>acb49d33f47dcc9a15d89b50aad6cf652</anchor>
       <arglist>(const RouteEvent &amp;ev)=0</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>libbgp::RouteWithdrawEvent</name>
-    <filename>classlibbgp_1_1RouteWithdrawEvent.html</filename>
-    <base>libbgp::RouteEvent</base>
-    <member kind="variable">
-      <type>std::vector&lt; Route &gt;</type>
-      <name>routes</name>
-      <anchorfile>classlibbgp_1_1RouteWithdrawEvent.html</anchorfile>
-      <anchor>ae9245ff18d4030bf2cdd6ac5987fd019</anchor>
-      <arglist></arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -2768,6 +3928,13 @@
       <anchorfile>classlibbgp_1_1Serializable.html</anchorfile>
       <anchor>a71cbd82595e9145b0f7bd0664d190e87</anchor>
       <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setLogger</name>
+      <anchorfile>classlibbgp_1_1Serializable.html</anchorfile>
+      <anchor>ade6ecd8173f40f0b5fa6021468632b16</anchor>
+      <arglist>(BgpLogHandler *logger)</arglist>
     </member>
     <member kind="function" protection="protected" virtualness="pure">
       <type>virtual ssize_t</type>
