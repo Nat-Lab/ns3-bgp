@@ -72,7 +72,7 @@ public:
 	void StopApplication(void);
 
     void AddPeer(const Peer &peer);
-    void AddRoute(libbgp::Route route, uint32_t nexthop);
+    void AddRoute(libbgp::Prefix4 route, uint32_t nexthop);
     void AddRoute(uint32_t prefix, uint8_t mask, uint32_t nexthop);
     void AddRoute(const Ipv4Address &prefix, const Ipv4Mask &mask, const Ipv4Address &nexthop);
     void SetLibbgpLogLevel(libbgp::LogLevel log_level);
@@ -108,7 +108,7 @@ private:
     std::vector<Ptr<Session>> _sessions;
 
     libbgp::BgpConfig _template;
-    libbgp::BgpRib _rib;
+    libbgp::BgpRib4 _rib;
     libbgp::RouteEventBus _bus;
     libbgp::LogLevel _log_level;
 

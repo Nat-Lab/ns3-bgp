@@ -91,12 +91,12 @@ void Bgp::StartApplication(void) {
 
     NS_LOG_LOGIC("creating configuration template...");
     _template.clock = &_clock;
-    _template.forced_default_nexthop = false;
+    _template.forced_default_nexthop4 = false;
     _template.hold_timer = (uint16_t) _hold_timer.GetSeconds();
     _template.no_collision_detection = false;
-    _template.no_nexthop_check = false;
+    _template.no_nexthop_check4 = false;
     _template.rev_bus = &_bus;
-    _template.rib = &_rib;
+    _template.rib4 = &_rib;
     _template.router_id = htonl(_bgp_id.Get());
     _template.use_4b_asn = true;
 
@@ -320,14 +320,15 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
     peer_logger->setLogLevel(_log_level);
 
     peer_config.asn = peer->local_asn;
-    peer_config.in_filters = peer->ingress_rules;
-    peer_config.out_filters = peer->egress_rules;
+    peer_config.in_filters4 = peer->ingress_rules;
+    peer_config.out_filters4 = peer->egress_rules;
     peer_config.log_handler = PeekPointer(peer_logger);
-    peer_config.nexthop = htonl(local_addr.GetLocal().Get());
+    peer_config.default_nexthop4 = htonl(local_addr.GetLocal().Get());
     peer_config.out_handler = PeekPointer(peer_out_handler);
     peer_config.peer_asn = peer->peer_asn;
-    peer_config.peering_lan_length = local_addr.GetMask().GetPrefixLength();
-    peer_config.peering_lan_prefix = htonl(local_addr.GetLocal().CombineMask(local_addr.GetMask()).Get());
+    peer_config.peering_lan4 = libbgp::Prefix4(
+        htonl(local_addr.GetLocal().CombineMask(local_addr.GetMask()).Get()), 
+        local_addr.GetMask().GetPrefixLength());
 
     Ptr<BgpNs3Fsm> peer_fsm = Create<BgpNs3Fsm>(peer_config);
     Ptr<Session> peer_session = Create<Session>();
@@ -375,7 +376,7 @@ void Bgp::AddPeer(const Peer &peer) {
  * @param route The route.
  * @param nexthop Nexthop.
  */
-void Bgp::AddRoute(libbgp::Route route, uint32_t nexthop) {
+void Bgp::AddRoute(libbgp::Prefix4 route, uint32_t nexthop) {
     NS_ASSERT(!_running);
     _rib.insert(&_logger, route, nexthop);
 }
@@ -389,7 +390,7 @@ void Bgp::AddRoute(libbgp::Route route, uint32_t nexthop) {
  */
 void Bgp::AddRoute(uint32_t prefix, uint8_t mask, uint32_t nexthop) {
     NS_ASSERT(!_running);
-    AddRoute(libbgp::Route(prefix, mask), nexthop);
+    AddRoute(libbgp::Prefix4(prefix, mask), nexthop);
 }
 
 /**

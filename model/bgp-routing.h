@@ -11,7 +11,7 @@
 #ifndef BGP_ROUTING_H
 #define BGP_ROUTING_H
 
-#include <libbgp/bgp-rib.h>
+#include <libbgp/bgp-rib4.h>
 #include "ns3/ipv4-routing-protocol.h"
 
 namespace ns3 {
@@ -40,13 +40,13 @@ public:
   	void PrintRoutingTable (Ptr<OutputStreamWrapper> stream, Time::Unit unit = Time::S) const;
 
     void SetIpv4 (Ptr<Ipv4> ipv4);
-    void SetRib(const libbgp::BgpRib *rib);
+    void SetRib(const libbgp::BgpRib4 *rib);
 
     Ptr<NetDevice> GetDeviceByNexthop(const Ipv4Address &nexthop) const;
     Ipv4InterfaceAddress GetAddressByNexthop(const Ipv4Address &nexthop) const;
 
 private:
-    const libbgp::BgpRib *_rib;
+    const libbgp::BgpRib4 *_rib;
     Ptr<Ipv4> _ipv4;
 };
 

@@ -45,7 +45,7 @@ Ptr<Ipv4Route> BgpRouting::RouteOutput (Ptr<Packet> p, const Ipv4Header &header,
 
     NS_LOG_DEBUG("looking for destination " << dst << " in rib.");
 
-    const libbgp::BgpRibEntry *rslt = _rib->lookup(dst.Get());
+    const libbgp::BgpRib4Entry *rslt = _rib->lookup(dst.Get());
 
     if (rslt == nullptr) {
         NS_LOG_INFO("no matching entry in rib for destination " << dst << ".");
@@ -97,7 +97,7 @@ bool BgpRouting::RouteInput (Ptr<const Packet> p, const Ipv4Header &header, Ptr<
         return true;
     }
 
-    const libbgp::BgpRibEntry *rslt = _rib->lookup(dst.Get());
+    const libbgp::BgpRib4Entry *rslt = _rib->lookup(dst.Get());
 
     if (rslt == nullptr) {
         NS_LOG_INFO("no matching entry in rib for destination " << dst << ".");
@@ -183,7 +183,7 @@ Ipv4InterfaceAddress BgpRouting::GetAddressByNexthop(const Ipv4Address &nexthop)
  * 
  * @param rib The libbgp RIB.
  */
-void BgpRouting::SetRib(const libbgp::BgpRib *rib) {
+void BgpRouting::SetRib(const libbgp::BgpRib4 *rib) {
     _rib = rib;
 }
 
@@ -206,7 +206,7 @@ void BgpRouting::PrintRoutingTable (Ptr<OutputStreamWrapper> stream, Time::Unit 
 
     uint8_t print_buffer[4096];
 
-    for (const libbgp::BgpRibEntry &entry : _rib->get()) {
+    for (const libbgp::BgpRib4Entry &entry : _rib->get()) {
         *os << Ipv4Address(ntohl(entry.route.getPrefix())) << "/" << (int) entry.route.getLength()
             << " from " << Ipv4Address(ntohl(entry.src_router_id)) << std::endl
             << "Attribues: " << std::endl;
