@@ -311,7 +311,10 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
     NS_LOG_LOGIC("matching peer found. (AS" << peer->peer_asn << ", " <<  peer->peer_address << ").");
 
     char peer_name[128];
-    snprintf(peer_name, 128, "AS%d/%c", peer->peer_asn, local_init ? 'L' : 'R');
+    snprintf(
+        peer_name, 128, "AS%d/AS%d/%c", 
+        peer->local_asn, peer->peer_asn,
+        local_init ? 'L' : 'R');
     libbgp::BgpConfig peer_config(_template);
 
     Ptr<BgpLog> peer_logger = Create<BgpLog>(peer_name);
