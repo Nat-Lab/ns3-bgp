@@ -2,7 +2,7 @@
 #     pass
 
 def configure(conf):
-    conf.env.append_value("LINKFLAGS", ["-lbgp"])
+    conf.env.append_value("LIB", ["bgp"])
 
 def build(bld):
     module = bld.create_ns3_module('bgp', ['core', 'internet', 'network'])
