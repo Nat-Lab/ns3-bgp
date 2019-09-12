@@ -206,7 +206,8 @@ void BgpRouting::PrintRoutingTable (Ptr<OutputStreamWrapper> stream, Time::Unit 
 
     uint8_t print_buffer[4096];
 
-    for (const libbgp::BgpRib4Entry &entry : _rib->get()) {
+    for (const std::pair<libbgp::BgpRib4EntryKey, libbgp::BgpRib4Entry> &entry_pair : _rib->get()) {
+        const libbgp::BgpRib4Entry entry = entry_pair.second;
         *os << Ipv4Address(ntohl(entry.route.getPrefix())) << "/" << (int) entry.route.getLength()
             << " from " << Ipv4Address(ntohl(entry.src_router_id)) << std::endl
             << "Attribues: " << std::endl;
