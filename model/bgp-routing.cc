@@ -45,7 +45,7 @@ Ptr<Ipv4Route> BgpRouting::RouteOutput (Ptr<Packet> p, const Ipv4Header &header,
 
     NS_LOG_DEBUG("looking for destination " << dst << " in rib.");
 
-    const libbgp::BgpRib4Entry *rslt = _rib->lookup(dst.Get());
+    const libbgp::BgpRib4Entry *rslt = _rib->lookup(htonl(dst.Get()));
 
     if (rslt == nullptr) {
         NS_LOG_INFO("no matching entry in rib for destination " << dst << ".");
@@ -97,7 +97,7 @@ bool BgpRouting::RouteInput (Ptr<const Packet> p, const Ipv4Header &header, Ptr<
         return true;
     }
 
-    const libbgp::BgpRib4Entry *rslt = _rib->lookup(dst.Get());
+    const libbgp::BgpRib4Entry *rslt = _rib->lookup(htonl(dst.Get()));
 
     if (rslt == nullptr) {
         NS_LOG_INFO("no matching entry in rib for destination " << dst << ".");
