@@ -69,7 +69,7 @@ Ptr<Ipv4Route> BgpRouting::RouteOutput (Ptr<Packet> p, const Ipv4Header &header,
     route->SetOutputDevice(dev);
 
     Ipv4Address source = header.GetSource();
-    if (source.IsAny()) source = _ipv4->GetAddress(_ipv4->GetInterfaceForDevice(dev), 0).GetLocal();
+    if (source.IsAny() || source == Ipv4Address(0x66666666)) source = _ipv4->GetAddress(_ipv4->GetInterfaceForDevice(dev), 0).GetLocal();
     route->SetSource(source);
 
     return route;
