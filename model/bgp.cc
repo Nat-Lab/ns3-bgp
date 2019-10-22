@@ -22,6 +22,11 @@ namespace ns3 {
 NS_LOG_COMPONENT_DEFINE("Bgp");
 NS_OBJECT_ENSURE_REGISTERED(Bgp);
 
+Peer::Peer() {
+    allow_local_as = 0;
+    passive = false;
+}
+
 /**
  * @brief Drop this session
  * 
@@ -329,6 +334,7 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
     peer_config.default_nexthop4 = htonl(local_addr.GetLocal().Get());
     peer_config.out_handler = PeekPointer(peer_out_handler);
     peer_config.peer_asn = peer->peer_asn;
+    peer_config.allow_local_as = peer->allow_local_as;
     peer_config.peering_lan4 = libbgp::Prefix4(
         htonl(local_addr.GetLocal().CombineMask(local_addr.GetMask()).Get()), 
         local_addr.GetMask().GetPrefixLength());

@@ -33,12 +33,15 @@ class BgpNs3SocketIn;
  */
 class Peer : public SimpleRefCount<Peer> {
 public:
+    Peer();
+
     uint32_t local_asn; //!< local ASN.
     uint32_t peer_asn; //!< peer ASN.
     Ipv4Address peer_address; //!< peer's address.
     libbgp::BgpFilterRules ingress_rules; //!< ingress router filter rules. See libbgp documents.
     libbgp::BgpFilterRules egress_rules; //!< egress router filter rules. See libbgp documents.
     bool passive; //!< Passive peering (don't send OPEN)
+    int8_t allow_local_as;
 };
 
 /**
