@@ -25,6 +25,10 @@ NS_OBJECT_ENSURE_REGISTERED(Bgp);
 Peer::Peer() {
     allow_local_as = 0;
     passive = false;
+    weight = 0;
+    no_nexthop_check = false;
+    forced_default_nexthop = false;
+    ibgp_alter_nexthop = false;
 }
 
 /**
@@ -334,10 +338,15 @@ bool Bgp::SessionInit(bool local_init, Ptr<Socket> socket) {
     peer_config.default_nexthop4 = htonl(local_addr.GetLocal().Get());
     peer_config.out_handler = PeekPointer(peer_out_handler);
     peer_config.peer_asn = peer->peer_asn;
-    peer_config.allow_local_as = peer->allow_local_as;
     peer_config.peering_lan4 = libbgp::Prefix4(
         htonl(local_addr.GetLocal().CombineMask(local_addr.GetMask()).Get()), 
         local_addr.GetMask().GetPrefixLength());
+
+    peer_config.allow_local_as = peer->allow_local_as;
+    peer_config.no_nexthop_check4 = peer->no_nexthop_check;
+    peer_config.weight = peer->weight;
+    peer_config.forced_default_nexthop4 = peer->forced_default_nexthop;
+    peer_config.ibgp_alter_nexthop = peer->ibgp_alter_nexthop;
 
     Ptr<BgpNs3Fsm> peer_fsm = Create<BgpNs3Fsm>(peer_config);
     Ptr<Session> peer_session = Create<Session>();

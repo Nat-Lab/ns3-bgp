@@ -40,8 +40,14 @@ public:
     Ipv4Address peer_address; //!< peer's address.
     libbgp::BgpFilterRules ingress_rules; //!< ingress router filter rules. See libbgp documents.
     libbgp::BgpFilterRules egress_rules; //!< egress router filter rules. See libbgp documents.
-    bool passive; //!< Passive peering (don't send OPEN)
-    int8_t allow_local_as;
+
+    bool passive; //!< passive peering (don't send OPEN)
+    int8_t allow_local_as; //!< Allow N local ASN in AS_PATH
+    int32_t weight; //!< weight of this peer
+    bool no_nexthop_check; //!< disable nexthop attribute validation
+    bool forced_default_nexthop; //!< always use peering IP as nexthop.
+    bool ibgp_alter_nexthop; //!< alter IBGP nexthop attribute the same way as EBGP.
+
 };
 
 /**
