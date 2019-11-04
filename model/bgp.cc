@@ -29,6 +29,7 @@ Peer::Peer() {
     no_nexthop_check = false;
     forced_default_nexthop = false;
     ibgp_alter_nexthop = false;
+    ebgp_multihop = 1;
 }
 
 /**
@@ -180,8 +181,6 @@ void Bgp::StopApplication(void) {
 }
 
 void Bgp::Tick() {
-    // TODO connect retry
-
     for (Ptr<Session> session : _sessions) {
         session->fsm->tick();
     }
@@ -195,7 +194,7 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
 
     for (const Ptr<Session> session : _sessions) {
         if (session->peer == peer) {
-            NS_LOG_INFO("session or fsm for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist, skipping.");
+            NS_LOG_LOGIC("session or fsm for peer AS" << peer->peer_asn << " (" << peer->peer_address << ") already exist, skipping.");
             return false;
         }
     }
@@ -221,7 +220,7 @@ bool Bgp::ConnectPeer(Ptr<Peer> peer) {
         MakeCallback(&Bgp::HandleConnectOutFailed, this)
     );
 
-    // TODO: set TTL
+    if (peer->local_asn != peer->peer_asn) peer_socket->SetIpTtl(peer->ebgp_multihop);
 
     if (peer_socket->Connect(InetSocketAddress(peer->peer_address, 179)) == -1) {
         NS_LOG_ERROR("failed to connect: " << strerror(errno));

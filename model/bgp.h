@@ -48,6 +48,8 @@ public:
     bool forced_default_nexthop; //!< always use peering IP as nexthop.
     bool ibgp_alter_nexthop; //!< alter IBGP nexthop attribute the same way as EBGP.
 
+    uint8_t ebgp_multihop;
+
 };
 
 /**
